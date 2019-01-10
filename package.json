@@ -1,0 +1,21 @@
+{
+  "name": "nugucall-web",
+  "version": "1.0.0",
+  "description": "nugucall-web",
+  "main": "nugucall-web.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "node.js"
+  ],
+  "author": "",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mysql": "^2.16.0",
+    "websocket": "^1.0.28"
+  }
+}
