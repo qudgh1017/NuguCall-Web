@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewpoint" content="width=device-width, initial-scale=1"/>
+		<title>누구콜-등록</title>
+		<script type="text/javascript" src="http://code.jQuery.com/jquery-1.10.2.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#apply").click(function(){
+					var con_test=confirm("등록하시겠습니까?");
+					if(con_test==true){
+						var json=new Object();
+						json.name=$('#name').val();
+						json.phone=$('#phone').val();
+						json.text=$('#text').val();
+						json.source=$('#source').val();
+						json.imei=$('#imei').val();
+						$.ajax({
+							type:"post",
+							url:"http://115.145.170.56:8081/nugucall/contents/insert_my_contents.jsp",
+							data: json,
+							dataType : "json",
+							success: function(json){
+								var result=json.result;
+								if(result=="1"){
+									//$("#ajaxReturn").html(json);
+									//console.log(json);
+									alert("등록되었습니다.");
+									$("#contents").load("contentsviewer.html");
+								}
+								else{
+									alert("등록 중 오류가 발생하였습니다.");
+								}
+							},
+							error: function(e){
+								console.log(e.responseText);
+							}
+						});
+					}
+					else if(con_test==false){
+						alert("등록을 취소하였습니다.")
+					}
+				});
+				$("#applycancel").click(function(){
+					alert("등록이 취소되었습니다.");
+					$("#contents").load("contentsviewer.html");
+				});
+			});
+		</script>
+		<style>
+			div#top{
+				background-color:#5F4B8B;
+				color:#FFFFFF;
+				height:100px;
+				text-align:center;
+			}
+			#wrapper{
+				display:flex;
+				height:80vh;
+			}
+			#left{
+				overflow:hidden;
+				background-color:#BFA0ED;
+				color:#FFA7A7;
+				width:150px;
+				float:left;
+			}
+			#contents{
+			}
+			input#transparent{
+				text-indent:0px;
+				text-align:center;
+				vertical-align:middle;
+				display:inline-block;
+				color:#000000;
+				border-color:transparent;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="contents">
+			이름 : <input type="text" name="name" id="name" value=""></input><br/>
+			전화번호 : <input type="text" name="phone" id="phone" value=""></input><br/>
+			사용자 문구 : <input type="text" name="text" id="text" value=""></input><br/>
+			이미지/동영상 : <input type="text" name="source" id="source" value=""></input><br/>
+			IMEI : <input type="text" name="imei" id="imei" value=""></input><br/>
+			<input id="apply" type="button" value="등록완료"></input>
+			<input id="applycancel" type="button" value="취소"></input>
+		</div>
+	</body>
+</html>

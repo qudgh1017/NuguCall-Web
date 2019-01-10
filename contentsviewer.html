@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewpoint" content="width=device-width, initial-scale=1"/>
+		<title>누구콜-컨텐츠조회</title>
+		<script src="http://code.jQuery.com/jquery-1.10.2.js"></script>
+		<script>
+			$(document).ready(function(){
+				//하단에 목록 번호를 붙이는 과정. 목록 개수는 임의로 10개라고 정했지만 나중에 전체 목록 개수를 받을 수 있게 되면 달라질 예정입니다.
+				//각 목록 번호를 클릭하면 각 번호에 따라 show_list(i) 함수를 실행하게 됩니다.
+				var test="";
+				for(i=0;i<10;i++){
+					var test1="";
+					test1+=i;
+					test+="<input type=\"button\" value=\""+i+"\" onclick=\"show_list("+i+");\"></input>";
+				}
+				$("#listArea2").append(test);
+				
+				//수정 화면을 잠시 숨겨둡니다.
+				$("#updatemain").hide();
+				
+				//등록 버튼을 누르면 insert.html로 이동합니다.
+				$("#NewFile2").click(function(){
+					$("#contents").load("insert.html");
+				});
+				
+				//어떤 목록 버튼도 누르지 않은 상태에서 select_user_contents.jsp로부터 지정된 숫자만큼 목록을 받아옵니다.
+				var jsonlist=new Object();
+				//임의로 start는 0, count는 100으로 지정하였으며 추후 전체 목록 개수를 받아올 수 있게 되면 바뀔 예정입니다.
+				jsonlist.start="0";
+				jsonlist.count="100";
+				//테이블 제목을 붙이는 부분입니다.
+				var tagList="<tr><th width=100>일련번호</th><th width=100>이름</th><th width=100>전화번호</th><th width=100>사용자 문구</th><th width=100>컨텐츠</th><th width=100>IMEI</th><th width=100>수정/삭제</th></tr>";
+				////var tagList2="";
+				$.ajax({
+					type : "post",
+					data : jsonlist,
+					url : "http://115.145.170.56:8081/nugucall/contents/select_user_contents.jsp",
+					dataType : "json",
+					success : function(jsonlist){
+						var result=jsonlist.result;
+						//result값이 1일 경우에만 실행하고, 아닐 경우에는 오류메세지를 보냅니다.
+						if(result=="1"){
+							$.each(jsonlist.items, function(){
+								//각 항목에 따라 데이터를 받아옵니다. 현재 수정페이지에 항목 내용을 추가하는 기능을 구현해 보느라 주석이 더러운 점 죄송합니다...
+								//항목마다 수정 버튼과 삭제 버튼도 추가합니다.
+								//수정 버튼을 누르면 Update_contents(this.id)가, 삭제 버튼을 누르면 delete_contents(this.id)가 실행됩니다.
+								////이름 : <input type="text" name="name" id="updatename" value=""></input><br/>
+								////var tagList2="";
+								tagList+="<tr>";
+								tagList+="<td>"+this.id+"</td>";
+								tagList+="<td>"+this.name+"</td>";
+								////tagList2+="이름 : <input type=\"text\" name=\"name\" id=\"updatename\" value=\""+this.name+"\"></input><br/>"
+								tagList+="<td>"+this.phone+"</td>";
+								////var get=new Object();
+								////get.id=this.id;
+								////alert(getphone);
+								tagList+="<td>"+this.text+"</td>";
+								tagList+="<td>"+this.source+"</td>";
+								tagList+="<td>"+this.imei+"</td>";
+								tagList+="<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents("+this.id+");\" style=\"background:transparent;\"></input>";
+								////alert("<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents("+this.id+",\""+getphone+"\");\" style=\"background:transparent;\"></input>");
+								tagList+="<input type=\"button\" value=\"삭제\" onclick=\"delete_contents("+this.id+");\" style=\"background:transparent;\"></input></td>";
+								tagList+="</tr>";
+								////$("#listArea3").append(tagList2);
+							});
+							$("#listArea").empty();
+							$("#listArea").append(tagList);
+							$("#listArea").listview("refresh");
+						}
+						else{
+							alert("컨텐츠 기록 조회 중 오류가 발생하였습니다.");
+						}
+					},
+					error : function(e){
+						console.log(e.responseText);
+					}
+				});
+			});
+			
+			//맨 처음에 말했던 목록 번호를 붙이는 부분의 함수입니다.
+			//위에 언급된 테이블에 항목들을 추가하는 기능과 거의 동일하나, 서버에 보내는 start값만 목록 번호에 따라 달라집니다.
+			//목록 번호는 다시 정비될 예정입니다.
+			function show_list(index){
+				var jsonlist=new Object();
+				jsonlist.start=index;
+				jsonlist.count="3";
+				var tagList="<tr><th width=100>일련번호</th><th width=100>이름</th><th width=100>전화번호</th><th width=100>사용자 문구</th><th width=100>컨텐츠</th><th width=100>IMEI</th><th width=100>수정/삭제</th></tr>";
+				$.ajax({
+					type : "post",
+					data : jsonlist,
+					url : "http://115.145.170.56:8081/nugucall/contents/select_user_contents.jsp",
+					dataType : "json",
+					success : function(jsonlist){
+						var result=jsonlist.result;
+						if(result=="1"){
+							$.each(jsonlist.items, function(){
+								tagList+="<tr>";
+								tagList+="<td>"+this.id+"</td>";
+								tagList+="<td>"+this.name+"</td>";
+								tagList+="<td>"+this.phone+"</td>";
+								var get=new Object();
+								get.id=this.id;
+								//alert(getphone);
+								tagList+="<td>"+this.text+"</td>";
+								tagList+="<td>"+this.source+"</td>";
+								tagList+="<td>"+this.imei+"</td>";
+								tagList+="<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents("+this.id+");\" style=\"background:transparent;\"></input>";
+								////alert("<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents("+this.id+",\""+getphone+"\");\" style=\"background:transparent;\"></input>");
+								tagList+="<input type=\"button\" value=\"삭제\" onclick=\"delete_contents("+this.id+");\" style=\"background:transparent;\"></input></td>";
+								tagList+="</tr>";
+							});
+							$("#listArea").empty();
+							$("#listArea").append(tagList);
+							$("#listArea").listview("refresh");
+						}
+						else{
+							alert("컨텐츠 기록 조회 중 오류가 발생하였습니다.");
+						}
+					},
+					error : function(e){
+						console.log(e.responseText);
+					}
+				});
+			}
+			
+			//수정 버튼을 눌렀을 때 실행되는 함수입니다.
+			//현재 수정페이지에 항목 내용을 추가하는 기능을 구현해 보느라 코드가 더러운 점 죄송합니다...
+			function Update_contents(update_id){
+				//컨텐츠 조회화면을 숨기고 수정화면을 띄웁니다.
+				$("#contentsmain").hide();
+				$("#updatemain").show();
+				//updateid랑 updateid2 관련해서는 일련번호 붙이는 과정이라 일단 무시해 주셔도 됩니다...(뒤에 //// 표시 되어있는 애들...우선 무시해주세요...)
+				var updateid="";////
+				updateid+=update_id;////
+				
+				//수정완료 버튼을 누르면 우선 확인창이 뜹니다.
+				$("#change").click(function(){
+					var con_test2=confirm("수정하시겠습니까?");
+					if(con_test2==true){
+						changebutton_click(updateid);
+					}
+					else if(con_test2==false){
+						alert("수정을 취소하였습니다.");
+					}
+				});
+				$("#changecancel").click(function(){
+					alert("수정이 취소되었습니다.");
+					$("#contents").load("contentsviewer.html");
+				});
+				var updateid2="번호 : ";////
+				updateid2+=update_id;////
+				$("#listArea4").empty();////
+				$("#listArea4").append(updateid2);////
+				$("#listArea4").listview("refresh");////
+			}
+			function changebutton_click(updateid){
+				var jsonupdate=new Object();
+				jsonupdate.id=updateid;
+				jsonupdate.name=$('#updatename').val();
+				jsonupdate.phone=$('#updatephone').val();
+				jsonupdate.text=$('#updatetext').val();
+				jsonupdate.source=$('#updatesource').val();
+				jsonupdate.imei=$('#updateimei').val();
+				$.ajax({
+					type : "post",
+					url : "http://115.145.170.56:8081/nugucall/contents/update_user_contents.jsp",
+					data : jsonupdate,
+					dataType : "json",
+					success : function(jsonupdate){
+						var result=jsonupdate.result;
+						if(result=="1"){
+							alert("수정되었습니다.");
+							$("#contents").load("contentsviewer.html");
+						}
+						else{
+							alert("수정 중 오류가 발생하였습니다.");
+						}
+					},
+					error:function(e){
+						console.log(e.responseText);
+					}
+				});
+			}
+			function delete_contents(delete_id){
+				var con_test=confirm("컨텐츠를 삭제하시겠습니까?");
+				if(con_test==true){
+					var jsondelete=new Object();
+					jsondelete.id=delete_id;
+					$.ajax({
+						type : "post",
+						url : "http://115.145.170.56:8081/nugucall/contents/delete_user_contents.jsp",
+						data : jsondelete,
+						dataType : "json",
+						success : function(jsondelete){
+							var result=jsondelete.result;
+							if(result=="1"){
+								alert("컨텐츠가 삭제되었습니다.");
+								$("#contents").load("contentsviewer.html");
+							}
+							else{
+								alert("컨텐츠 삭제에 실패하였습니다.");
+							}
+						},
+						error:function(e){
+							console.log(e.responseText);
+						}
+					});
+				}
+				else if(con_test==false){
+					alert("컨텐츠 삭제를 취소하였습니다.");
+				}
+			}
+		</script>
+		<style>
+			div#top{
+				background-color:#5F4B8B;
+				color:#FFFFFF;
+				height:100px;
+				text-align:center;
+			}
+			#wrapper{
+				display:flex;
+				height:80vh;
+			}
+			#left{
+				overflow:hidden;
+				background-color:#BFA0ED;
+				color:#FFA7A7;
+				width:150px;
+				float:left;
+			}
+			#contents{
+			}
+			input#transparent{
+				text-indent:0px;
+				text-align:center;
+				vertical-align:middle;
+				display:inline-block;
+				color:#000000;
+				border-color:transparent;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="contents">
+			<div id="contentsmain">
+				<input type="button" id="NewFile2" value="등록" style="background:transparent;"></input>
+				<table border=1 data-role="listview" id="listArea" data-inset="true"></table>
+				<div data-role="listview" id="listArea2" data-inset="true"></div>
+			</div>
+			<div id="updatemain">
+				<div data-role="listview" id="listArea4" data-inset="true"></div>
+				<div data-role="listview" id="listArea3" data-inset="true"></div>
+				이름 : <input type="text" name="name" id="updatename" value=""></input><br/>
+				전화번호 : <input type="text" name="phone" id="updatephone" value=""></input><br/>
+				사용자 문구 : <input type="text" name="text" id="updatetext" value=""></input><br/>
+				이미지/동영상 : <input type="text" name="updatesource" id="updatesource" value=""></input><br/>
+				IMEI : <input type="text" name="imei" id="updateimei" value=""></input><br/>
+				<input type="button" value="수정완료" id="change"></input>
+				<input type="button" value="취소" id="changecancel"></input>
+			</div>
+		</div>
+	</body>
+</html>

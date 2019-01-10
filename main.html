@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewpoint" content="width=device-width, initial-scale=1"/>
+		<title>누구콜-메인</title>
+		<script src="http://code.jQuery.com/jquery-1.10.2.js"></script>
+		<script>
+			$(document).ready(function(){
+				$("#contents").load("mainpage.html");
+				$("#main").click(function(){
+					$("#contents").load("mainpage.html");
+				});
+				$("#NewFile").click(function(){
+					$("#contents").load("recordsviewer.html");
+				});
+				$("#NewFile1").click(function(){
+					$("#contents").load("contentsviewer.html");
+				});
+			});
+		</script>
+		<style>
+			div#top{
+				background-color:#5F4B8B;
+				color:#FFFFFF;
+				height:100px;
+				text-align:center;
+			}
+			#wrapper{
+				display:flex;
+				height:80vh;
+			}
+			#left{
+				overflow:hidden;
+				background-color:#BFA0ED;
+				color:#FFA7A7;
+				width:150px;
+				float:left;
+			}
+			#contents{
+			}
+			input#transparent{
+				text-indent:0px;
+				text-align:center;
+				vertical-align:middle;
+				display:inline-block;
+				color:#000000;
+				border-color:transparent;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="top">
+			<input type="button" id="main" value="누구콜" style="color:#FFFFFF;background:transparent;"></input>
+		</div>
+		<div id="wrapper">
+			<div id="left">
+				<input type="button" id="NewFile" value="통화기록조회" style="color:#FFFFFF;background:transparent;"></input>
+				<input type="button" id="NewFile1" value="컨텐츠조회" style="color:#FFFFFF;background:transparent;"></input>
+			</div>
+			<div id="contents">
+			</div>
+		</div>
+	</body>
+</html>

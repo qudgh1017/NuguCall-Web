@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewpoint" content="width=device-width, initial-scale=1"/>
+		<title>누구콜-통화기록조회</title>
+		<script src="http://code.jQuery.com/jquery-1.10.2.js"></script>
+		<script>
+			$(document).ready(function(){
+				var json=new Object();
+				json.start="0";
+				json.count="100";
+				var tagList="<tr><th width=100>일련번호</th><th width=100>발신자 전화번호</th><th width=100>수신자 전화번호</th><th width=100>발신자 IMEI</th><th width=100>발신 시각</th><th width=100>삭제</th></tr>";
+				$.ajax({
+					type : "post",
+					data : json,
+					url : "http://115.145.170.56:8081/nugucall/records/select_user_records.jsp",
+					dataType : "json",
+					success : function(json){
+						var result=json.result;
+						if(result=="1"){
+							$.each(json.items, function(){
+								tagList+="<tr>";
+								tagList+="<td>"+this.id+"</td>";
+								tagList+="<td>"+this.sender+"</td>";
+								tagList+="<td>"+this.receiver+"</td>";
+								tagList+="<td>"+this.imei+"</td>";
+								tagList+="<td>"+this.time+"</td>";
+								tagList+="<td><input id=\"deletebutton\" type=\"button\" value=\"삭제\" onclick=\"delete_records("+this.id+");\" style=\"background:transparent;\"></input></td>";
+								tagList+="</tr>";
+							});
+							$("#listArea").empty();
+							$("#listArea").append(tagList);
+							$("#listArea").listview("refresh");
+						}
+						else{
+							alert("통화기록 조회 중 오류가 발생하였습니다.");
+						}
+					},
+					error : function(e){
+						console.log(e.responseText);
+					}
+				});
+				var test="";
+				for(i=0;i<10;i++){
+					test+="<input type=\"button\" value=\""+i+"\"></input>";
+				}
+				$("#listArea2").empty();
+				$("#listArea2").append(test);
+				$("#listArea2").listview("refresh");
+			});
+			function delete_records(result){
+				var json2=new Object();
+				json2.id=result;
+				$.ajax({
+					type:"post",
+					url:"http://115.145.170.56:8081/nugucall/records/delete_user_records.jsp",
+					data:json2,
+					dataType : "json",
+					success: function(json2){
+						var result=json2.result;
+						if(result=="1"){
+							when_success();
+						}
+						else{
+							when_not_success();
+						}
+					},
+					error: function(e){
+						console.log(e.responseText);
+					}
+				});
+			}
+			/*
+			function get_delete_result(){
+				$(document).ready(function(){
+					var result1="";
+					$.ajax({
+						url : "24.jsp",
+						dataType : "json",
+						success : function(data){
+							result1+=data.result;
+							alert(result1);
+							if(result1=="1"){
+								when_success();
+							}
+							else{
+								when_not_success();
+							}
+						},
+						error : function(e){
+							console.log(e.responseText);
+						}
+					});
+				});
+			}
+			*/
+			function when_success(){
+				alert("통화기록이 삭제되었습니다.");
+				location.reload();
+			}
+			function when_not_success(){
+				alert("통화기록 삭제에 실패했습니다.");
+			}
+		</script>
+		<style>
+			div#top{
+				background-color:#5F4B8B;
+				color:#FFFFFF;
+				height:100px;
+				text-align:center;
+			}
+			#wrapper{
+				display:flex;
+				height:80vh;
+			}
+			#left{
+				overflow:hidden;
+				background-color:#BFA0ED;
+				color:#FFA7A7;
+				width:150px;
+				float:left;
+			}
+			#contents{
+			}
+			input#transparent{
+				text-indent:0px;
+				text-align:center;
+				vertical-align:middle;
+				display:inline-block;
+				color:#000000;
+				border-color:transparent;
+			}
+		</style>
+	</head>
+	<body>
+		<table border=1 data-role="listview" id="listArea" data-inset="true"></table>
+		<div data-role="listview" id="listArea2" data-inset="true"></div>
+	</body>
+</html>
