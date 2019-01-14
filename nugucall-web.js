@@ -5,7 +5,6 @@ var mysql = require('mysql');
 var express = require('express');
 var SocketServer = require('net');
 var WebSocketServer = require('websocket').server;
-var test;
 
 var SOCKET_UP_PORT = 8081;
 var SOCKET_DOWN_PORT = 8082;
