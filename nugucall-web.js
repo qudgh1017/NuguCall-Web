@@ -371,13 +371,16 @@ var uploadSocketServer = SocketServer.createServer(function(socket) {
 	socket.on('data', function(message) {
 		if (!isFileData) {
 			var json = JSON.parse(message.toString());
-			fileName = json.fileName;
-			fileName = getCurrentTime() + fileName.substr(fileName.lastIndexOf('.')).toLowerCase();
-			fileSize = parseInt(json.fileSize);
+			fileName = json.fileName; // 기존 파일명 + 확장자
+			fileName = getCurrentTime() + fileName.substr(fileName.lastIndexOf('.')).toLowerCase(); // 수정 파일명 + 확장자
+			fileSize = parseInt(json.fileSize); // 파일 크기
 			writeStream = fs.createWriteStream(DEFAULT_PATH + fileName);
 			check = 0;
 			isFileData = true;
-			socket.write(fileName + "\n", 'utf8');
+			
+			var obj = new Object();
+			obj.fileName = fileName;
+			socket.write(obj + "\n", 'utf8');
 		} else {
 			writeStream.write(message);
 			check += message.length;
@@ -402,8 +405,17 @@ uploadSocketServer.listen(SOCKET_UP_PORT);
 var downloadSocketServer = SocketServer.createServer(function(socket) {
 
 	socket.on('data', function(message) {
-		var fileName = message.fileName;
+		var json = JSON.parse(message.toString());
+		var fileName = json.fileName;
+		
+		var stats = fs.statSync(DEFAULT_PATH + fileName);
+		
+		var obj = new Object();
+		obj.fileSize = stats.size;
+		socket.write(obj + "\n", 'utf8');
+		
 		var readStream = fs.createReadStream(DEFAULT_PATH + fileName);
+		
 		readStream.on('data', function(data) {
 			socket.write(data);
 		});

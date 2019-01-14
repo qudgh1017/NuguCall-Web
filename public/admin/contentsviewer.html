@@ -36,7 +36,7 @@
 		$.ajax({
 			type : "post",
 			data : JSON.stringify(jsonlist),
-			url : "/select_user_contents",
+			url : "http://115.145.170.56:8085/select_user_contents",
 			dataType : "json",
 			success : function(jsonlist) {
 				var result = jsonlist.result;
@@ -89,7 +89,7 @@
 		$.ajax({
 			type : "post",
 			data : JSON.stringify(jsonlist),
-			url : "/select_user_contents",
+			url : "http://115.145.170.56:8085/select_user_contents",
 			dataType : "json",
 			success : function(jsonlist) {
 				var result = jsonlist.result;
@@ -162,7 +162,7 @@
 		jsonupdate.imei = $('#updateimei').val();
 		$.ajax({
 			type : "post",
-			url : "/update_user_contents",
+			url : "http://115.145.170.56:8085/update_user_contents",
 			data : JSON.stringify(jsonupdate),
 			dataType : "json",
 			success : function(jsonupdate) {
@@ -186,7 +186,7 @@
 			jsondelete.id = delete_id;
 			$.ajax({
 				type : "post",
-				url : "/delete_user_contents",
+				url : "http://115.145.170.56:8085/delete_user_contents",
 				data : JSON.stringify(jsondelete),
 				dataType : "json",
 				success : function(jsondelete) {

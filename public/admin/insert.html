@@ -18,7 +18,7 @@
 				json.imei = $('#imei').val();
 				$.ajax({
 					type : "post",
-					url : "/insert_my_contents",
+					url : "http://115.145.170.56:8085/insert_my_contents",
 					data : JSON.stringify(json),
 					dataType : "json",
 					success : function(json) {
