@@ -66,7 +66,18 @@
 						tagList += "<td>" + this.name + "</td>";
 						tagList += "<td>" + this.phone + "</td>";
 						tagList += "<td>" + this.text + "</td>";
-						tagList += "<td>" + this.source + "</td>";
+						
+						//이미지나 동영상의 경우 확장자를 확인한 후(현재까지는 다른 파일들과 mp4만 구분합니다.) 이미지를 표시할지 동영상을 표시할지 선택합니다.
+						//동영상의 경우 재생버튼 추가를 위해 controls 속성을 넣었으나 동영상을 제대로 받지 못한 상태입니다.
+						var sourcename=this.source;
+						var fileext=this.source;
+						fileext=fileext.slice(fileext.indexOf(".")+1).toLowerCase();
+						if(fileext=="mp4"){
+							tagList+="<td><video controls class=\"max-small\" src=\"http://115.145.170.56:8085/contents/"+this.source+"\"></video></td>";
+						}
+						else{
+							tagList+="<td><img class=\"max-small\" src=\"http://115.145.170.56:8085/contents/"+this.source+"\" onclick=\"ImgShow(\'"+sourcename+"\')\"></td>";
+						}
 						tagList += "<td>" + this.imei + "</td>";
 						tagList += "<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents(\'" + update_items + "\');\" style=\"background:transparent;\"></input>";
 						tagList += "</tr>";
@@ -190,6 +201,20 @@
 			//alert("컨텐츠 삭제를 취소하였습니다.");
 		//}
 	}
+	function ImgShow(img){
+		var imgsource="";
+		imgsource+="<img src=\"http://115.145.170.56:8085/contents/"+img+"\" onclick=\"ImgShowreturn()\">";
+		$("#contentsmain").hide();
+		$("#imgshow").show();
+		$("#listArea4").empty();
+		$("#listArea4").append(imgsource);
+		$("#listArea4").listview("refresh");
+	}
+	
+	function ImgShowreturn(){
+		$("#contentsmain").show();
+		$("#imgshow").hide();
+	}
 </script>
 <style>
 div#top {
@@ -224,6 +249,14 @@ input#transparent {
 	color: #000000;
 	border-color: transparent;
 }
+
+.max-small{
+width:auto;
+height:auto;
+max-width:100px;
+max-height:100px;
+}
+
 </style>
 </head>
 <body>
@@ -231,6 +264,7 @@ input#transparent {
 		<div id="contentsmain">
 			<input type="button" id="InsertButton" value="등록" style="background: transparent;"></input>
 			<input type="button" id="DeleteButton" value="삭제" style="background: transparent;"></input>
+			<br/>이미지 클릭 시 원본 사이즈로 볼 수 있으며, 다시 클릭하면 목록으로 돌아옵니다.<br/>
 			<table border=1 data-role="listview" id="listArea" data-inset="true"></table>
 			<div data-role="listview" id="listArea2" data-inset="true"></div>
 		</div>
@@ -238,6 +272,9 @@ input#transparent {
 			<div data-role="listview" id="listArea3" data-inset="true"></div>
 			<input type="button" value="수정완료" id="change"></input>
 			<input type="button" value="취소" id="changecancel"></input>
+		</div>
+		<div id="imgshow">
+			<div data-role="listview" id="listArea4" data-inset="true"></div>
 		</div>
 	</div>
 </body>
