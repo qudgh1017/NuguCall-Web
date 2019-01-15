@@ -328,7 +328,7 @@ function selectYourRecords(data, response) {
 		} else {
 			// 조작 여부 판단이 필요함. 현재는 미구현 상태.
 			json.result = 1;
-			console.log(results);
+			// console.log(results);
 		}
 		response.status(200).send(json);
 	});
@@ -380,7 +380,7 @@ var uploadSocketServer = SocketServer.createServer(function(socket) {
 			
 			var obj = new Object();
 			obj.fileName = fileName;
-			socket.write(obj + "\n", 'utf8');
+			socket.write(JSON.stringify(obj) + "\n", 'utf8');
 		} else {
 			writeStream.write(message);
 			check += message.length;
@@ -412,7 +412,7 @@ var downloadSocketServer = SocketServer.createServer(function(socket) {
 		
 		var obj = new Object();
 		obj.fileSize = stats.size;
-		socket.write(obj + "\n", 'utf8');
+		socket.write(JSON.stringify(obj) + "\n", 'utf8');
 		
 		var readStream = fs.createReadStream(DEFAULT_PATH + fileName);
 		
