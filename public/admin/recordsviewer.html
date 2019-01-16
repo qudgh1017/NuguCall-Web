@@ -6,7 +6,7 @@
 <title>누구콜-통화기록조회</title>
 <script src="http://code.jQuery.com/jquery-1.10.2.js"></script>
 <script>
-	$(document).ready(function() {
+	//$(document).ready(function() {
 		var json = new Object();
 		json.start = 0;
 		json.count = 100;
@@ -47,27 +47,33 @@
 		$("#listArea2").empty();
 		$("#listArea2").append(test);
 		$("#listArea2").listview("refresh");
-	});
+	//});
 	function delete_records(result) {
-		var json2 = new Object();
-		json2.id = result;
-		$.ajax({
-			type : "post",
-			url : "http://115.145.170.56:8085/delete_user_records",
-			data : JSON.stringify(json2),
-			dataType : "json",
-			success : function(json2) {
-				var result = json2.result;
-				if (result == "1") {
-					when_success();
-				} else {
-					when_not_success();
+		var con_test=confirm("컨텐츠를 삭제하시겠습니까?");
+		if(con_test==true){
+			var json2 = new Object();
+			json2.id = result;
+			$.ajax({
+				type : "post",
+				url : "http://115.145.170.56:8085/delete_user_records",
+				data : JSON.stringify(json2),
+				dataType : "json",
+				success : function(json2) {
+					var result = json2.result;
+					if (result == "1") {
+						when_success();
+					} else {
+						when_not_success();
+					}
+				},
+				error : function(e) {
+					console.log(e.responseText);
 				}
-			},
-			error : function(e) {
-				console.log(e.responseText);
-			}
-		});
+			});
+		}
+		else if(con_test==false){
+			alert("컨텐츠 삭제가 취소되었습니다.")
+		}
 	}
 	/*
 	function get_delete_result(){
