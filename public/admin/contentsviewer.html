@@ -6,86 +6,44 @@
 <title>누구콜-컨텐츠조회</title>
 <script src="http://code.jQuery.com/jquery-1.10.2.js"></script>
 <script>
-	$(document).ready(function() {
+
+		//수정 화면을 잠시 숨겨둡니다.
+		$("#updatemain").hide();
+
+		//처음 실행 시에는 첫 번째 목록을 보여주기 위해 show_list(1) 함수를 실행합니다.
+		show_list(1);
+		
 		//하단에 목록 번호를 붙이는 과정. 목록 개수는 임의로 10개라고 정했지만 나중에 전체 목록 개수를 받을 수 있게 되면 달라질 예정입니다.
 		//각 목록 번호를 클릭하면 각 번호에 따라 show_list(i) 함수를 실행하게 됩니다.
 		var test = "";
-		for (i = 0; i < 10; i++) {
+		for (i = 1; i < 10; i++) {
 			var test1 = "";
 			test1 += i;
 			test += "<input type=\"button\" value=\"" + i + "\" onclick=\"show_list(" + i + ");\"></input>";
 		}
 		$("#listArea2").append(test);
 
-		//수정 화면을 잠시 숨겨둡니다.
-		$("#updatemain").hide();
-
 		//등록 버튼을 누르면 insert.html로 이동합니다.
-		$("#NewFile2").click(function() {
+		$("#InsertButton").click(function() {
 			$("#contents").load("insert.html");
 		});
-
-		//어떤 목록 버튼도 누르지 않은 상태에서 select_user_contents.jsp로부터 지정된 숫자만큼 목록을 받아옵니다.
-		var jsonlist = new Object();
-		//임의로 start는 0, count는 100으로 지정하였으며 추후 전체 목록 개수를 받아올 수 있게 되면 바뀔 예정입니다.
-		jsonlist.start = 0;
-		jsonlist.count = 100;
-		//테이블 제목을 붙이는 부분입니다.
-		var tagList = "<tr><th width=100>일련번호</th><th width=100>이름</th><th width=100>전화번호</th><th width=100>사용자 문구</th><th width=100>컨텐츠</th><th width=100>IMEI</th><th width=100>수정/삭제</th></tr>";
-		////var tagList2="";
-		$.ajax({
-			type : "post",
-			data : JSON.stringify(jsonlist),
-			url : "http://115.145.170.56:8085/select_user_contents",
-			dataType : "json",
-			success : function(jsonlist) {
-				var result = jsonlist.result;
-				//result값이 1일 경우에만 실행하고, 아닐 경우에는 오류메세지를 보냅니다.
-				if (result == "1") {
-					$.each(jsonlist.items, function() {
-						//각 항목에 따라 데이터를 받아옵니다. 현재 수정페이지에 항목 내용을 추가하는 기능을 구현해 보느라 주석이 더러운 점 죄송합니다...
-						//항목마다 수정 버튼과 삭제 버튼도 추가합니다.
-						//수정 버튼을 누르면 Update_contents(this.id)가, 삭제 버튼을 누르면 delete_contents(this.id)가 실행됩니다.
-						////이름 : <input type="text" name="name" id="updatename" value=""></input><br/>
-						////var tagList2="";
-						tagList += "<tr>";
-						tagList += "<td>" + this.id + "</td>";
-						tagList += "<td>" + this.name + "</td>";
-						////tagList2+="이름 : <input type=\"text\" name=\"name\" id=\"updatename\" value=\""+this.name+"\"></input><br/>"
-						tagList += "<td>" + this.phone + "</td>";
-						////var get=new Object();
-						////get.id=this.id;
-						////alert(getphone);
-						tagList += "<td>" + this.text + "</td>";
-						tagList += "<td>" + this.source + "</td>";
-						tagList += "<td>" + this.imei + "</td>";
-						tagList += "<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents(" + this.id + ");\" style=\"background:transparent;\"></input>";
-						////alert("<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents("+this.id+",\""+getphone+"\");\" style=\"background:transparent;\"></input>");
-						tagList += "<input type=\"button\" value=\"삭제\" onclick=\"delete_contents(" + this.id + ");\" style=\"background:transparent;\"></input></td>";
-						tagList += "</tr>";
-						////$("#listArea3").append(tagList2);
-					});
-					$("#listArea").empty();
-					$("#listArea").append(tagList);
-					$("#listArea").listview("refresh");
-				} else {
-					alert("컨텐츠 기록 조회 중 오류가 발생하였습니다.");
-				}
-			},
-			error : function(e) {
-				console.log(e.responseText);
-			}
+		
+		//삭제 버튼을 누르면 deleteclick() 함수를 실행합니다.
+		$("#DeleteButton").click(function(){
+			deleteclick();
 		});
-	});
 
-	//맨 처음에 말했던 목록 번호를 붙이는 부분의 함수입니다.
-	//위에 언급된 테이블에 항목들을 추가하는 기능과 거의 동일하나, 서버에 보내는 start값만 목록 번호에 따라 달라집니다.
-	//목록 번호는 다시 정비될 예정입니다.
+	//지정된 목록 번호에 따라 항목들을 불러오는 함수입니다.
+	//목록 번호는 다시 수정될 예정입니다.
 	function show_list(index) {
 		var jsonlist = new Object();
-		jsonlist.start = index;
+		
+		//임의로 start값과 count 값을 지정하였고, 바뀔 예정입니다.
+		jsonlist.start = index-1;
 		jsonlist.count = 3;
-		var tagList = "<tr><th width=100>일련번호</th><th width=100>이름</th><th width=100>전화번호</th><th width=100>사용자 문구</th><th width=100>컨텐츠</th><th width=100>IMEI</th><th width=100>수정/삭제</th></tr>";
+		
+		//tagList에 테이블의 구성요소들을 서버로부터 받아온 데이터를 통해 계속 채웁니다.
+		var tagList = "<tr><th></th><th width=100>일련번호</th><th width=100>이름</th><th width=100>전화번호</th><th width=100>사용자 문구</th><th width=100>컨텐츠</th><th width=100>IMEI</th><th width=100>수정</th></tr>";
 		$.ajax({
 			type : "post",
 			data : JSON.stringify(jsonlist),
@@ -95,21 +53,36 @@
 				var result = jsonlist.result;
 				if (result == "1") {
 					$.each(jsonlist.items, function() {
-						tagList += "<tr>";
+						//update_items는 Update_contents() 함수의 구성요소들을 붙여갑니다.
+						var update_items="";
+						update_items+=this.id+"\',\'";
+						update_items+=this.name+"\',\'";
+						update_items+=this.phone+"\',\'";
+						update_items+=this.text+"\',\'";
+						update_items+=this.source+"\',\'";
+						update_items+=this.imei;
+						tagList += "<tr><td><input type=\"checkbox\" name=\"checkcheck\" value="+this.id+"></input></td>";
 						tagList += "<td>" + this.id + "</td>";
 						tagList += "<td>" + this.name + "</td>";
 						tagList += "<td>" + this.phone + "</td>";
-						var get = new Object();
-						get.id = this.id;
-						//alert(getphone);
 						tagList += "<td>" + this.text + "</td>";
-						tagList += "<td>" + this.source + "</td>";
+						
+						//이미지나 동영상의 경우 확장자를 확인한 후(현재까지는 다른 파일들과 mp4만 구분합니다.) 이미지를 표시할지 동영상을 표시할지 선택합니다.
+						//동영상의 경우 재생버튼 추가를 위해 controls 속성을 넣었으나 동영상을 제대로 받지 못한 상태입니다.
+						var sourcename=this.source;
+						var fileext=this.source;
+						fileext=fileext.slice(fileext.indexOf(".")+1).toLowerCase();
+						if(fileext=="mp4"){
+							tagList+="<td><video controls class=\"max-small\" src=\"http://115.145.170.56:8085/contents/"+this.source+"\"></video></td>";
+						}
+						else{
+							tagList+="<td><img class=\"max-small\" src=\"http://115.145.170.56:8085/contents/"+this.source+"\" onclick=\"ImgShow(\'"+sourcename+"\')\"></td>";
+						}
 						tagList += "<td>" + this.imei + "</td>";
-						tagList += "<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents(" + this.id + ");\" style=\"background:transparent;\"></input>";
-						////alert("<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents("+this.id+",\""+getphone+"\");\" style=\"background:transparent;\"></input>");
-						tagList += "<input type=\"button\" value=\"삭제\" onclick=\"delete_contents(" + this.id + ");\" style=\"background:transparent;\"></input></td>";
+						tagList += "<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents(\'" + update_items + "\');\" style=\"background:transparent;\"></input>";
 						tagList += "</tr>";
 					});
+					//tagList를 붙입니다.
 					$("#listArea").empty();
 					$("#listArea").append(tagList);
 					$("#listArea").listview("refresh");
@@ -124,14 +97,11 @@
 	}
 
 	//수정 버튼을 눌렀을 때 실행되는 함수입니다.
-	//현재 수정페이지에 항목 내용을 추가하는 기능을 구현해 보느라 코드가 더러운 점 죄송합니다...
-	function Update_contents(update_id) {
+	function Update_contents(update_id,update_name,update_phone,update_text,update_source,update_imei) {
+		
 		//컨텐츠 조회화면을 숨기고 수정화면을 띄웁니다.
 		$("#contentsmain").hide();
 		$("#updatemain").show();
-		//updateid랑 updateid2 관련해서는 일련번호 붙이는 과정이라 일단 무시해 주셔도 됩니다...(뒤에 //// 표시 되어있는 애들...우선 무시해주세요...)
-		var updateid = "";////
-		updateid += update_id;////
 
 		//수정완료 버튼을 누르면 우선 확인창이 뜹니다.
 		$("#change").click(function() {
@@ -146,12 +116,19 @@
 			alert("수정이 취소되었습니다.");
 			$("#contents").load("contentsviewer.html");
 		});
-		var updateid2 = "번호 : ";////
-		updateid2 += update_id;////
-		$("#listArea4").empty();////
-		$("#listArea4").append(updateid2);////
-		$("#listArea4").listview("refresh");////
+		
+		//수정화면에 불러온 항목들이 입력된 입력창들을 띄웁니다.
+		var updatebox="번호 : "+update_id;
+		updatebox+="<br/>이름 : <input type=\"text\" id=\"updatename\" value="+update_name;
+		updatebox+="></input><br/>전화번호 : <input type=\"text\" id=\"updatephone\" value="+update_phone;
+		updatebox+="></input><br/>사용자 문구 : <input type=\"text\" id=\"updatetext\" value="+update_text;
+		updatebox+="></input><br/>이미지/동영상 : <input type=\"text\" id=\"updatesource\" value="+update_source;
+		updatebox+="></input><br/>IMEI : <input type=\"text\" id=\"updateimei\" value="+update_imei;
+		updatebox+="></input>";
+		$("#listArea3").append(updatebox);
 	}
+	
+	//수정된 정보들을 서버로 보냅니다.
 	function changebutton_click(updateid) {
 		var jsonupdate = new Object();
 		jsonupdate.id = updateid;
@@ -179,9 +156,27 @@
 			}
 		});
 	}
+	
+	//삭제 버튼을 눌렀을 때 실행되는 함수입니다.
+	//체크 표시가 되어 있는 항목들에 대해 모두 delete_contents() 함수를 실행시킵니다.
+	function deleteclick(){
+		var con_test3=confirm("선택된 컨텐츠를 모두 삭제하시겠습니까?");
+		if(con_test3==true){
+			for(i=0;i<3;i++){
+				if(checkcheck[i].checked==true){
+					delete_contents(checkcheck[i].value);
+				}
+			}
+		}
+		else if(con_test3==false){
+			alert("컨텐츠 삭제를 취소하였습니다.")
+		}
+	}
+	
+	//선택된 항목을 하나하나 서버로 보내서 삭제시킵니다.
 	function delete_contents(delete_id) {
-		var con_test = confirm("컨텐츠를 삭제하시겠습니까?");
-		if (con_test == true) {
+		//var con_test = confirm(delete_id+"번 컨텐츠를 삭제하시겠습니까?");
+		//if (con_test == true) {
 			var jsondelete = new Object();
 			jsondelete.id = delete_id;
 			$.ajax({
@@ -202,9 +197,23 @@
 					console.log(e.responseText);
 				}
 			});
-		} else if (con_test == false) {
-			alert("컨텐츠 삭제를 취소하였습니다.");
-		}
+		//} else if (con_test == false) {
+			//alert("컨텐츠 삭제를 취소하였습니다.");
+		//}
+	}
+	function ImgShow(img){
+		var imgsource="";
+		imgsource+="<img src=\"http://115.145.170.56:8085/contents/"+img+"\" onclick=\"ImgShowreturn()\">";
+		$("#contentsmain").hide();
+		$("#imgshow").show();
+		$("#listArea4").empty();
+		$("#listArea4").append(imgsource);
+		$("#listArea4").listview("refresh");
+	}
+	
+	function ImgShowreturn(){
+		$("#contentsmain").show();
+		$("#imgshow").hide();
 	}
 </script>
 <style>
@@ -240,20 +249,32 @@ input#transparent {
 	color: #000000;
 	border-color: transparent;
 }
+
+.max-small{
+width:auto;
+height:auto;
+max-width:100px;
+max-height:100px;
+}
+
 </style>
 </head>
 <body>
 	<div id="contents">
 		<div id="contentsmain">
-			<input type="button" id="NewFile2" value="등록" style="background: transparent;"></input>
+			<input type="button" id="InsertButton" value="등록" style="background: transparent;"></input>
+			<input type="button" id="DeleteButton" value="삭제" style="background: transparent;"></input>
+			<br/>이미지 클릭 시 원본 사이즈로 볼 수 있으며, 다시 클릭하면 목록으로 돌아옵니다.<br/>
 			<table border=1 data-role="listview" id="listArea" data-inset="true"></table>
 			<div data-role="listview" id="listArea2" data-inset="true"></div>
 		</div>
 		<div id="updatemain">
-			<div data-role="listview" id="listArea4" data-inset="true"></div>
 			<div data-role="listview" id="listArea3" data-inset="true"></div>
-			이름 : <input type="text" name="name" id="updatename" value=""></input><br /> 전화번호 : <input type="text" name="phone" id="updatephone" value=""></input><br /> 사용자 문구 : <input type="text" name="text" id="updatetext" value=""></input><br /> 이미지/동영상 : <input type="text" name="updatesource" id="updatesource" value=""></input><br />
-			IMEI : <input type="text" name="imei" id="updateimei" value=""></input><br /> <input type="button" value="수정완료" id="change"></input> <input type="button" value="취소" id="changecancel"></input>
+			<input type="button" value="수정완료" id="change"></input>
+			<input type="button" value="취소" id="changecancel"></input>
+		</div>
+		<div id="imgshow">
+			<div data-role="listview" id="listArea4" data-inset="true"></div>
 		</div>
 	</div>
 </body>
