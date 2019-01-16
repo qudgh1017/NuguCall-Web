@@ -1,90 +1,152 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta name="viewpoint" content="width=device-width, initial-scale=1" />
-<title>누구콜-등록</title>
-<script type="text/javascript" src="http://code.jQuery.com/jquery-1.10.2.js"></script>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#apply").click(function() {
-			var con_test = confirm("등록하시겠습니까?");
-			if (con_test == true) {
-				var json = new Object();
-				json.name = $('#name').val();
-				json.phone = $('#phone').val();
-				json.text = $('#text').val();
-				json.source = $('#source').val();
-				json.imei = $('#imei').val();
-				$.ajax({
-					type : "post",
-					url : "http://115.145.170.56:8085/insert_my_contents",
-					data : JSON.stringify(json),
-					dataType : "json",
-					success : function(json) {
-						var result = json.result;
-						if (result == "1") {
-							//$("#ajaxReturn").html(json);
-							//console.log(json);
-							alert("등록되었습니다.");
-							$("#contents").load("contentsviewer.html");
-						} else {
-							alert("등록 중 오류가 발생하였습니다.");
-						}
-					},
-					error : function(e) {
-						console.log(e.responseText);
-					}
-				});
-			} else if (con_test == false) {
-				alert("등록을 취소하였습니다.")
-			}
-		});
-		$("#applycancel").click(function() {
-			alert("등록이 취소되었습니다.");
-			$("#contents").load("contentsviewer.html");
-		});
-	});
-</script>
-<style>
-div#top {
-	background-color: #5F4B8B;
-	color: #FFFFFF;
-	height: 100px;
-	text-align: center;
-}
+<title>누구콜 컨텐츠 등록</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-#wrapper {
-	display: flex;
-	height: 80vh;
-}
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
 
-#left {
-	overflow: hidden;
-	background-color: #BFA0ED;
-	color: #FFA7A7;
-	width: 150px;
-	float: left;
-}
-
-#contents {
-	
-}
-
-input#transparent {
-	text-indent: 0px;
-	text-align: center;
-	vertical-align: middle;
-	display: inline-block;
-	color: #000000;
-	border-color: transparent;
-}
-</style>
 </head>
 <body>
-	<div id="contents">
-		이름 : <input type="text" name="name" id="name" value=""></input><br /> 전화번호 : <input type="text" name="phone" id="phone" value=""></input><br /> 사용자 문구 : <input type="text" name="text" id="text" value=""></input><br /> 이미지/동영상 : <input type="text" name="source" id="source" value=""></input><br /> IMEI : <input
-			type="text" name="imei" id="imei" value=""></input><br /> <input id="apply" type="button" value="등록완료"></input> <input id="applycancel" type="button" value="취소"></input>
+	<div data-role="page">
+		<div data-role="header">
+			<h4>컨텐츠 등록</h4>
+		</div>
+		<div data-role="content">
+			<p>이름</p>
+			<input type="text" id="name" />
+			<p>문구</p>
+			<input type="text" id="text" />
+			<p>컨텐츠</p>
+			<input type="file" id="source" />
+			<p>전화번호</p>
+			<input type="text" id="phone" />
+			<p>IMEI</p>
+			<input type="text" id="imei" />
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<a href="#" data-role="button" id="apply">등록</a>
+				</div>
+				<div class="ui-block-b">
+					<a href="#" data-role="button" id="applycancel">취소</a>
+				</div>
+			</div>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<h4>누구콜 프로젝트</h4>
+		</div>
 	</div>
 </body>
+
+<script>
+	var webSocket;
+
+	var source;
+	
+	var contentsName;
+	var contentsText;
+	var contentsSource;
+	var contentsSize;
+	var contentsPhone;
+	var contentsImei;
+
+	function uploadContents() {
+
+		contentsName = $('#name').val();
+		contentsText = $('#text').val();
+		contentsSource = $('#source').val();
+		contentsPhone = $('#phone').val();
+		contentsImei = $('#imei').val();
+
+		if (contentsName === '' || contentsText === '' || contentsSource === '' || contentsPhone === '' || contentsImei === '') {
+			return;
+		}
+
+		webSocket = new WebSocket("ws://115.145.170.56:8085", "nugucall");
+		webSocket.binaryType = "arraybuffer";
+		webSocket.onopen = function(open) {
+			console.log("WebSocket 연결 성공");
+			onWebSocketOpen();
+		}
+		webSocket.onmessage = function(message) {
+			onWebSocketMessage(message);
+		}
+		webSocket.onerror = function(error) {
+			console.log("WebSocket 오류 발생");
+		}
+		webSocket.onclose = function(close) {
+			console.log("WebSocket 연결 종료");
+		}
+	}
+
+	function onWebSocketOpen() {
+		source = $('#source')[0].files[0];
+		var json = new Object();
+		json.fileName = source.name;
+		json.fileSize = source.size;
+		var str = JSON.stringify(json);
+		webSocket.send(str);
+	}
+
+	function onWebSocketMessage(message) {
+		var json = JSON.parse(message.data);
+		contentsSource = json.fileName;
+		contentsSize = json.fileSize;
+		
+		var reader = new FileReader();
+		var rawData = new ArrayBuffer();
+		reader.onload = function(e) {
+			rawData = e.target.result;
+			webSocket.send(rawData);
+		}
+		reader.onloadend = function() {
+			console.log("파일 전송이 완료됐습니다.");
+			insertContents();
+		}
+		reader.readAsArrayBuffer(source);
+	}
+
+	function insertContents() {
+		var json = new Object();
+		json.name = contentsName;
+		json.phone = contentsPhone;
+		json.text = contentsText;
+		json.source = contentsSource;
+		json.size = contentsSize;
+		json.imei = contentsImei;
+		
+		$.ajax({
+			type : "post",
+			url : "http://115.145.170.56:8085/insert_my_contents",
+			data : JSON.stringify(json),
+			dataType : "json",
+			success : function(json) {
+				var result = json.result;
+				if (result == "1") {
+					alert("등록되었습니다.");
+				} else {
+					alert("등록 중 오류가 발생하였습니다.");
+				}
+			},
+			error : function(e) {
+				console.log(e);
+			}
+		});
+	}
+
+	$(document).ready(function() {
+
+		$("#apply").on('click', function() {
+			uploadContents();
+		});
+
+		$("#applycancel").on('click', function() {
+			alert("등록이 취소하였습니다.");
+		});
+
+	});
+</script>
+
 </html>

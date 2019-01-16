@@ -28,6 +28,20 @@ webServer.listen(WEB_SERVER_PORT, function() {
 	console.log("web server started.");
 });
 
+// Add headers
+app.use(function(req, res, next) {
+	// Website you wish to allow to connect
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	// Request methods you wish to allow
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+	// Request headers you wish to allow
+	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+	// Set to true if you need the website to include cookies in the requests sent to the API (e.g. in case you use sessions)
+	res.setHeader('Access-Control-Allow-Credentials', true);
+	// Pass to next layer of middleware
+	next();
+});
+
 app.post("/delete_my_contents", function(request, response) {
 	request.on('data', function(data) {
 		deleteMyContents(data.toString(), response);
@@ -141,8 +155,8 @@ function deleteUserContents(data, response) {
 function insertMyContents(data, response) {
 	data = JSON.parse(data);
 
-	var sql = "insert into contents (name, phone, text, source, imei) values (?, ?, ?, ?, ?)";
-	var inserts = [ data.name, data.phone, data.text, data.source, data.imei ];
+	var sql = "insert into contents (name, phone, text, source, size, imei) values (?, ?, ?, ?, ?, ?)";
+	var inserts = [ data.name, data.phone, data.text, data.source, data.size, data.imei ];
 	var query = mysql.format(sql, inserts);
 
 	connection.query(query, function(error, results, fields) {
@@ -220,8 +234,8 @@ function selectYourContents(data, response) {
 function updateMyContents(data, response) {
 	data = JSON.parse(data);
 
-	var sql = "update contents set name = ?, phone = ?, text = ?, source = ? where imei = ?";
-	var inserts = [ data.name, data.phone, data.text, data.source, data.imei ];
+	var sql = "update contents set name = ?, phone = ?, text = ?, source = ?, size = ? where imei = ?";
+	var inserts = [ data.name, data.phone, data.text, data.source, data.size, data.imei ];
 	var query = mysql.format(sql, inserts);
 
 	connection.query(query, function(error, results, fields) {
@@ -374,13 +388,16 @@ var uploadSocketServer = SocketServer.createServer(function(socket) {
 			fileName = json.fileName; // 기존 파일명 + 확장자
 			fileName = getCurrentTime() + fileName.substr(fileName.lastIndexOf('.')).toLowerCase(); // 수정 파일명 + 확장자
 			fileSize = parseInt(json.fileSize); // 파일 크기
+
 			writeStream = fs.createWriteStream(DEFAULT_PATH + fileName);
 			check = 0;
 			isFileData = true;
-			
+
 			var obj = new Object();
 			obj.fileName = fileName;
-			socket.write(JSON.stringify(obj) + "\n", 'utf8');
+			obj.fileSize = fileSize;
+			var str = JSON.stringify(obj);
+			socket.write(str + "\n", 'utf8');
 		} else {
 			writeStream.write(message);
 			check += message.length;
@@ -407,15 +424,9 @@ var downloadSocketServer = SocketServer.createServer(function(socket) {
 	socket.on('data', function(message) {
 		var json = JSON.parse(message.toString());
 		var fileName = json.fileName;
-		
-		var stats = fs.statSync(DEFAULT_PATH + fileName);
-		
-		var obj = new Object();
-		obj.fileSize = stats.size;
-		socket.write(JSON.stringify(obj) + "\n", 'utf8');
-		
+		var fileSize = json.fileSize;
+
 		var readStream = fs.createReadStream(DEFAULT_PATH + fileName);
-		
 		readStream.on('data', function(data) {
 			socket.write(data);
 		});
@@ -441,12 +452,41 @@ webSocketServer.on('request', function(request) {
 
 	var socket = request.accept('nugucall', request.origin);
 
-	socket.on('message', function(message) {
+	var fileName;
+	var fileSize;
+	var writeStream;
+	var check;
+	var isFileData = false;
 
+	socket.on('message', function(message) {
+		if (!isFileData) {
+			var json = JSON.parse(message.utf8Data);
+			fileName = json.fileName; // 기존 파일명 + 확장자
+			fileName = getCurrentTime() + fileName.substr(fileName.lastIndexOf('.')).toLowerCase(); // 수정 파일명 + 확장자
+			fileSize = parseInt(json.fileSize); // 파일 크기
+
+			writeStream = fs.createWriteStream(DEFAULT_PATH + fileName);
+			check = 0;
+			isFileData = true;
+
+			var obj = new Object();
+			obj.fileName = fileName;
+			obj.fileSize = fileSize;
+			var str = JSON.stringify(obj);
+			socket.sendUTF(str);
+		} else {
+			writeStream.write(message.binaryData);
+			check += message.binaryData.length;
+			if (check === fileSize) {
+				writeStream.end();
+				isFileData = false;
+				console.log("클라이언트에서 파일을 업로드하였습니다.");
+			}
+		}
 	});
 
 	socket.on('error', function(error) {
-		console.log("[Error] WebSocket Error: " + error.message);
+
 	});
 
 	socket.on('close', function(error) {
