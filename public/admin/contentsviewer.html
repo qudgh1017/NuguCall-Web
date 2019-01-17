@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewpoint" content="width=device-width, initial-scale=1" />
 <title>누구콜-컨텐츠조회</title>
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:100,300,400,500,700,900&amp;subset=korean" rel="stylesheet">
 <script src="http://code.jQuery.com/jquery-1.10.2.js"></script>
 <script>
 
-		//수정 화면을 잠시 숨겨둡니다.
-		$("#updatemain").hide();
-
 		//처음 실행 시에는 첫 번째 목록을 보여주기 위해 show_list(1) 함수를 실행합니다.
 		show_list(1);
+		
+		//수정 화면을 잠시 숨겨둡니다.
+		$("#updatemain").hide();
+		$("#imgshow").hide();
 		
 		//하단에 목록 번호를 붙이는 과정. 목록 개수는 임의로 10개라고 정했지만 나중에 전체 목록 개수를 받을 수 있게 되면 달라질 예정입니다.
 		//각 목록 번호를 클릭하면 각 번호에 따라 show_list(i) 함수를 실행하게 됩니다.
@@ -19,82 +21,82 @@
 		for (i = 1; i < 10; i++) {
 			var test1 = "";
 			test1 += i;
-			test += "<input type=\"button\" value=\"" + i + "\" onclick=\"show_list(" + i + ");\"></input>";
+			test += "<input class=\"transparent2\" type=\"button\" value=\"" + i + "\" onclick=\"show_list(" + i + ");\"></input>";
 		}
 		$("#listArea2").append(test);
 
 		//등록 버튼을 누르면 insert.html로 이동합니다.
 		$("#InsertButton").click(function() {
+			alert("얜 되나...");
 			$("#contents").load("insert.html");
 		});
 		
 		//삭제 버튼을 누르면 deleteclick() 함수를 실행합니다.
 		$("#DeleteButton").click(function(){
+			alert("왜 또 이게...");
 			deleteclick();
 		});
-
-	//지정된 목록 번호에 따라 항목들을 불러오는 함수입니다.
-	//목록 번호는 다시 수정될 예정입니다.
-	function show_list(index) {
-		var jsonlist = new Object();
-		
-		//임의로 start값과 count 값을 지정하였고, 바뀔 예정입니다.
-		jsonlist.start = index-1;
-		jsonlist.count = 3;
-		
-		//tagList에 테이블의 구성요소들을 서버로부터 받아온 데이터를 통해 계속 채웁니다.
-		var tagList = "<tr><th></th><th width=100>일련번호</th><th width=100>이름</th><th width=100>전화번호</th><th width=100>사용자 문구</th><th width=100>컨텐츠</th><th width=100>IMEI</th><th width=100>수정</th></tr>";
-		$.ajax({
-			type : "post",
-			data : JSON.stringify(jsonlist),
-			url : "http://115.145.170.56:8085/select_user_contents",
-			dataType : "json",
-			success : function(jsonlist) {
-				var result = jsonlist.result;
-				if (result == "1") {
-					$.each(jsonlist.items, function() {
-						//update_items는 Update_contents() 함수의 구성요소들을 붙여갑니다.
-						var update_items="";
-						update_items+=this.id+"\',\'";
-						update_items+=this.name+"\',\'";
-						update_items+=this.phone+"\',\'";
-						update_items+=this.text+"\',\'";
-						update_items+=this.source+"\',\'";
-						update_items+=this.imei;
-						tagList += "<tr><td><input type=\"checkbox\" name=\"checkcheck\" value="+this.id+"></input></td>";
-						tagList += "<td>" + this.id + "</td>";
-						tagList += "<td>" + this.name + "</td>";
-						tagList += "<td>" + this.phone + "</td>";
-						tagList += "<td>" + this.text + "</td>";
-						
-						//이미지나 동영상의 경우 확장자를 확인한 후(현재까지는 다른 파일들과 mp4만 구분합니다.) 이미지를 표시할지 동영상을 표시할지 선택합니다.
-						//동영상의 경우 재생버튼 추가를 위해 controls 속성을 넣었으나 동영상을 제대로 받지 못한 상태입니다.
-						var sourcename=this.source;
-						var fileext=this.source;
-						fileext=fileext.slice(fileext.indexOf(".")+1).toLowerCase();
-						if(fileext=="mp4"){
-							tagList+="<td><video controls class=\"max-small\" src=\"http://115.145.170.56:8085/contents/"+this.source+"\"></video></td>";
-						}
-						else{
-							tagList+="<td><img class=\"max-small\" src=\"http://115.145.170.56:8085/contents/"+this.source+"\" onclick=\"ImgShow(\'"+sourcename+"\')\"></td>";
-						}
-						tagList += "<td>" + this.imei + "</td>";
-						tagList += "<td><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents(\'" + update_items + "\');\" style=\"background:transparent;\"></input>";
-						tagList += "</tr>";
-					});
-					//tagList를 붙입니다.
-					$("#listArea").empty();
-					$("#listArea").append(tagList);
-					$("#listArea").listview("refresh");
-				} else {
-					alert("컨텐츠 기록 조회 중 오류가 발생하였습니다.");
+		function show_list(index) {
+			var jsonlist = new Object();
+			
+			//임의로 start값과 count 값을 지정하였고, 바뀔 예정입니다.
+			jsonlist.start = (index-1)*3;
+			jsonlist.count = 3;
+			
+			//tagList에 테이블의 구성요소들을 서버로부터 받아온 데이터를 통해 계속 채웁니다.
+			var tagList = "<tr><th>등록번호</th><th width=100 align=\"center\">이름</th><th width=100>전화번호</th><th width=100>사용자 문구</th><th width=100>컨텐츠</th><th width=100>IMEI</th><th>수정</th><th>삭제</th></tr>";
+			$.ajax({
+				type : "post",
+				data : JSON.stringify(jsonlist),
+				url : "http://115.145.170.56:8085/select_user_contents",
+				dataType : "json",
+				success : function(jsonlist) {
+					var result = jsonlist.result;
+					if (result == "1") {
+						$.each(jsonlist.items, function() {
+							//update_items는 Update_contents() 함수의 구성요소들을 붙여갑니다.
+							var update_items="";
+							update_items+=this.id+"\',\'";
+							update_items+=this.name+"\',\'";
+							update_items+=this.phone+"\',\'";
+							update_items+=this.text+"\',\'";
+							update_items+=this.source+"\',\'";
+							update_items+=this.imei;
+							//tagList += "<tr><td><input type=\"checkbox\" name=\"checkcheck\" value="+this.id+"></input></td>";
+							tagList += "<tr><td align=\"center\">" + this.id + "</td>";
+							tagList += "<td align=\"center\">" + this.name + "</td>";
+							tagList += "<td align=\"center\">" + this.phone + "</td>";
+							tagList += "<td align=\"center\">" + this.text + "</td>";
+							
+							//이미지나 동영상의 경우 확장자를 확인한 후(현재까지는 다른 파일들과 mp4만 구분합니다.) 이미지를 표시할지 동영상을 표시할지 선택합니다.
+							//동영상의 경우 재생버튼 추가를 위해 controls 속성을 넣었으나 동영상을 제대로 받지 못한 상태입니다.
+							var sourcename=this.source;
+							var fileext=this.source;
+							fileext=fileext.slice(fileext.indexOf(".")+1).toLowerCase();
+							if(fileext=="mp4"){
+								tagList+="<td align=\"center\"><video controls class=\"max-small\" src=\"http://115.145.170.56:8085/contents/"+this.source+"\"></video></td>";
+							}
+							else{
+								tagList+="<td align=\"center\"><img class=\"max-small\" src=\"http://115.145.170.56:8085/contents/"+this.source+"\" onclick=\"ImgShow(\'"+sourcename+"\')\"></td>";
+							}
+							tagList += "<td align=\"center\">" + this.imei + "</td>";
+							tagList += "<td align=\"center\"><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents(\'" + update_items + "\');\" style=\"background:transparent;\"></input>";
+							tagList+="<td align=\"center\"><input type=\"checkbox\" name=\"checkcheck\" value="+this.id+"></input></td>"
+							tagList += "</tr>";
+						});
+						//tagList를 붙입니다.
+						$("#listArea").empty();
+						$("#listArea").append(tagList);
+						$("#listArea").listview("refresh");
+					} else {
+						alert("컨텐츠 기록 조회 중 오류가 발생하였습니다.");
+					}
+				},
+				error : function(e) {
+					console.log(e.responseText);
 				}
-			},
-			error : function(e) {
-				console.log(e.responseText);
-			}
-		});
-	}
+			});
+		}
 
 	//수정 버튼을 눌렀을 때 실행되는 함수입니다.
 	function Update_contents(update_id,update_name,update_phone,update_text,update_source,update_imei) {
@@ -201,80 +203,129 @@
 			//alert("컨텐츠 삭제를 취소하였습니다.");
 		//}
 	}
-	function ImgShow(img){
+	
+	//클릭 시 이미지가 보여지는 기능을 하는 함수입니다.
+	function ImgPopup(img){
 		var imgsource="";
-		imgsource+="<img src=\"http://115.145.170.56:8085/contents/"+img+"\" onclick=\"ImgShowreturn()\">";
+		imgsource+="<img src=\"http://115.145.170.56:8085/contents/"+img+"\" onclick=\"ImgPopupreturn()\">";
 		$("#contentsmain").hide();
 		$("#imgshow").show();
 		$("#listArea4").empty();
 		$("#listArea4").append(imgsource);
 		$("#listArea4").listview("refresh");
 	}
-	
-	function ImgShowreturn(){
+	function ImgPopupreturn(){
 		$("#contentsmain").show();
 		$("#imgshow").hide();
 	}
+	
+
+	//맨
+	function topclick(){
+		$("#contents").load("mainpage.html");
+	}
+	
+	$(window).scroll(function(){
+		if($(this).scrollTop()>200){
+			$('.toptop').fadeIn();
+		}else{
+			$('.toptop').fadeout();
+		}
+	});
+	$('.toptop').click(function(){
+		$('html,body').animate({scrollTop:0},400);
+		return false;
+	});
+	
 </script>
 <style>
 div#top {
-	background-color: #5F4B8B;
-	color: #FFFFFF;
-	height: 100px;
-	text-align: center;
+	background-image:url("images/title2.png");
+	padding-bottom:calc(142/1417*100%);
 }
-
-#wrapper {
-	display: flex;
-	height: 80vh;
+#top2{
+	padding:calc(142/1417*14%);
 }
-
-#left {
-	overflow: hidden;
-	background-color: #BFA0ED;
-	color: #FFA7A7;
-	width: 150px;
-	float: left;
+#top3{
+	padding:calc(142/1417*70%);
 }
-
-#contents {
-	
-}
-
-input#transparent {
-	text-indent: 0px;
-	text-align: center;
-	vertical-align: middle;
-	display: inline-block;
-	color: #000000;
-	border-color: transparent;
-}
-
 .max-small{
-width:auto;
-height:auto;
-max-width:100px;
-max-height:100px;
+	width:auto;
+	height:auto;
+	max-width:100px;
+	max-height:100px;
 }
-
+input{
+	font-size:1.5vw;
+}
+.transparent2 {
+	background-color:white;
+	border:none;
+	color:black;
+	text-align:center;
+	text-decoration:none;
+	display:inline-block;
+	cursor:pointer;
+	width:5%;
+	height:5%;
+}.transparent2:hover{
+font-weight:700;
+}
+.buttonbutton {
+	background-color:#1428A0;
+	border:none;
+	color:white;
+	text-align:center;
+	text-decoration:none;
+	display:inline-block;
+	cursor:pointer;
+	width:10%;
+	height:10%;
+}.buttonbutton:hover {
+	background-color:#8093FF;
+}
+.tbstyle{
+	border-collapse:collapse;
+	border-top:1px solid #eeeeee;
+}.tbstyle th, .tbstyle td{
+	padding:10px;
+	width:10%;
+}.tbstyle th{
+	border-bottom:1px solid #eeeeee;
+}.tbstyle td{
+	border-bottom:1px solid #eeeeee;
+}.tbstyle th:first-child, .tbstyle td:first-child{
+	border-left:0;
+}.tbstyle th:last-child, .tbstyle td:last-child{
+	border-right:0;
+}
+a.toptop{
+	position:fixed;
+	right:1%;
+	bottom:1%;
+	display:none;
+}
 </style>
 </head>
 <body>
 	<div id="contents">
 		<div id="contentsmain">
-			<input type="button" id="InsertButton" value="등록" style="background: transparent;"></input>
-			<input type="button" id="DeleteButton" value="삭제" style="background: transparent;"></input>
-			<br/>이미지 클릭 시 원본 사이즈로 볼 수 있으며, 다시 클릭하면 목록으로 돌아옵니다.<br/>
-			<table border=1 data-role="listview" id="listArea" data-inset="true"></table>
-			<div data-role="listview" id="listArea2" data-inset="true"></div>
+		<div style="text-align:left;">
+			<input class="buttonbutton" type="button" id="InsertButton" value="등록"></input>
+			<input class="buttonbutton" type="button" id="DeleteButton" value="삭제"></input>
+			<br/><br/>이미지 클릭 시 사진을 원본 사이즈로 볼 수 있으며, 다시 클릭하면 원래대로 돌아옵니다.<br/>
+		</div>
+			<table class="tbstyle" data-role="listview" id="listArea" data-inset="true"></table>
+			<div style="position:fixed;bottom:5px;width:100%;" data-role="listview" id="listArea2" data-inset="true"></div>
+			<a href="#" class="toptop"><img src="images/up.png" style="width:30px;"></a>
+		</div>
+		<div id="imgshow">
+			<div data-role="listview" id="listArea4" data-inset="true"></div>
 		</div>
 		<div id="updatemain">
 			<div data-role="listview" id="listArea3" data-inset="true"></div>
 			<input type="button" value="수정완료" id="change"></input>
 			<input type="button" value="취소" id="changecancel"></input>
-		</div>
-		<div id="imgshow">
-			<div data-role="listview" id="listArea4" data-inset="true"></div>
 		</div>
 	</div>
 </body>
