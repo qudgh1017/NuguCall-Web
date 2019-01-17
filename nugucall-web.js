@@ -28,17 +28,9 @@ webServer.listen(WEB_SERVER_PORT, function() {
 	console.log("web server started.");
 });
 
-// Add headers
-app.use(function(req, res, next) {
-	// Website you wish to allow to connect
-	res.setHeader('Access-Control-Allow-Origin', '*');
-	// Request methods you wish to allow
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	// Request headers you wish to allow
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-	// Set to true if you need the website to include cookies in the requests sent to the API (e.g. in case you use sessions)
-	res.setHeader('Access-Control-Allow-Credentials', true);
-	// Pass to next layer of middleware
+app.all('/*', function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
 	next();
 });
 
@@ -115,237 +107,285 @@ app.post("/select_your_records", function(request, response) {
 });
 
 function deleteMyContents(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "delete from contents where imei = ?";
-	var inserts = [ data.imei ];
-	var query = mysql.format(sql, inserts);
+		var sql = "delete from contents where imei = ?";
+		var inserts = [ data.imei ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function deleteUserContents(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "delete from contents where id = ?";
-	var inserts = [ data.id ];
-	var query = mysql.format(sql, inserts);
+		var sql = "delete from contents where id = ?";
+		var inserts = [ data.id ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function insertMyContents(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "insert into contents (name, phone, text, source, size, imei) values (?, ?, ?, ?, ?, ?)";
-	var inserts = [ data.name, data.phone, data.text, data.source, data.size, data.imei ];
-	var query = mysql.format(sql, inserts);
+		var sql = "insert into contents (name, phone, text, source, size, imei) values (?, ?, ?, ?, ?, ?)";
+		var inserts = [ data.name, data.phone, data.text, data.source, data.size, data.imei ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function selectMyContents(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "select * from contents where imei = ?";
-	var inserts = [ data.imei ];
-	var query = mysql.format(sql, inserts);
+		var sql = "select * from contents where imei = ?";
+		var inserts = [ data.imei ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-			json.items = results;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function selectUserContents(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "select * from contents order by id desc limit ?, ?";
-	var inserts = [ data.start, data.count ];
-	var query = mysql.format(sql, inserts);
+		var sql = "select * from contents order by id desc limit ?, ?";
+		var inserts = [ data.start, data.count ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-			json.items = results;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function selectYourContents(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "select * from contents where phone = ?";
-	var inserts = [ data.phone ];
-	var query = mysql.format(sql, inserts);
+		var sql = "select * from contents where phone = ?";
+		var inserts = [ data.phone ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-			json.items = results;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function updateMyContents(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "update contents set name = ?, phone = ?, text = ?, source = ?, size = ? where imei = ?";
-	var inserts = [ data.name, data.phone, data.text, data.source, data.size, data.imei ];
-	var query = mysql.format(sql, inserts);
+		var sql = "update contents set name = ?, phone = ?, text = ?, source = ?, size = ? where imei = ?";
+		var inserts = [ data.name, data.phone, data.text, data.source, data.size, data.imei ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function updateUserContents(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "update contents set name = ?, phone = ?, text = ?, source = ?, imei = ? where id = ?";
-	var inserts = [ data.name, data.phone, data.text, data.source, data.imei, data.id ];
-	var query = mysql.format(sql, inserts);
+		var sql = "update contents set name = ?, phone = ?, text = ?, source = ?, imei = ? where id = ?";
+		var inserts = [ data.name, data.phone, data.text, data.source, data.imei, data.id ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function deleteUserRecords(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "delete from records where id = ?";
-	var inserts = [ data.id ];
-	var query = mysql.format(sql, inserts);
+		var sql = "delete from records where id = ?";
+		var inserts = [ data.id ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function insertMyRecords(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "insert into records (sender, receiver, imei, time) values (?, ?, ?, ?)";
-	var inserts = [ data.sender, data.receiver, data.imei, data.time ];
-	var query = mysql.format(sql, inserts);
+		var sql = "insert into records (sender, receiver, imei, time) values (?, ?, ?, ?)";
+		var inserts = [ data.sender, data.receiver, data.imei, data.time ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function selectUserRecords(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "select * from records order by id desc limit ?, ?";
-	var inserts = [ data.start, data.count ];
-	var query = mysql.format(sql, inserts);
+		var sql = "select * from records order by id desc limit ?, ?";
+		var inserts = [ data.start, data.count ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			json.result = 1;
-			json.items = results;
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function selectYourRecords(data, response) {
-	data = JSON.parse(data);
+	try {
+		data = JSON.parse(data);
 
-	var sql = "select c.imei, r.imei from contents c, records r where c.phone = ? and r.sender = ? and r.receiver = ?";
-	var inserts = [ data.sender, data.sender, data.receiver ];
-	var query = mysql.format(sql, inserts);
+		var sql = "select c.imei, r.imei from contents c, records r where c.phone = ? and r.sender = ? and r.receiver = ?";
+		var inserts = [ data.sender, data.sender, data.receiver ];
+		var query = mysql.format(sql, inserts);
 
-	connection.query(query, function(error, results, fields) {
-		var json = new Object();
-		if (error) {
-			json.result = 0;
-			console.log("[DB Error] " + error);
-		} else {
-			// 조작 여부 판단이 필요함. 현재는 미구현 상태.
-			json.result = 1;
-			// console.log(results);
-		}
-		response.status(200).send(json);
-	});
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				// 조작 여부 판단이 필요함. 현재는 미구현 상태.
+				json.result = 1;
+				// console.log(results);
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 function getCurrentTime() {
@@ -383,29 +423,33 @@ var uploadSocketServer = SocketServer.createServer(function(socket) {
 	var isFileData = false;
 
 	socket.on('data', function(message) {
-		if (!isFileData) {
-			var json = JSON.parse(message.toString());
-			fileName = json.fileName; // 기존 파일명 + 확장자
-			fileName = getCurrentTime() + fileName.substr(fileName.lastIndexOf('.')).toLowerCase(); // 수정 파일명 + 확장자
-			fileSize = parseInt(json.fileSize); // 파일 크기
+		try {
+			if (!isFileData) {
+				var json = JSON.parse(message.toString());
+				fileName = json.fileName; // 기존 파일명 + 확장자
+				fileName = getCurrentTime() + fileName.substr(fileName.lastIndexOf('.')).toLowerCase(); // 수정 파일명 + 확장자
+				fileSize = parseInt(json.fileSize); // 파일 크기
 
-			writeStream = fs.createWriteStream(DEFAULT_PATH + fileName);
-			check = 0;
-			isFileData = true;
+				writeStream = fs.createWriteStream(DEFAULT_PATH + fileName);
+				check = 0;
+				isFileData = true;
 
-			var obj = new Object();
-			obj.fileName = fileName;
-			obj.fileSize = fileSize;
-			var str = JSON.stringify(obj);
-			socket.write(str + "\n", 'utf8');
-		} else {
-			writeStream.write(message);
-			check += message.length;
-			if (check === fileSize) {
-				writeStream.end();
-				isFileData = false;
-				console.log("클라이언트에서 파일을 업로드하였습니다.");
+				var obj = new Object();
+				obj.fileName = fileName;
+				obj.fileSize = fileSize;
+				var str = JSON.stringify(obj);
+				socket.write(str + "\n", 'utf8');
+			} else {
+				writeStream.write(message);
+				check += message.length;
+				if (check === fileSize) {
+					writeStream.end();
+					isFileData = false;
+					console.log("클라이언트에서 파일을 업로드하였습니다.");
+				}
 			}
+		} catch (e) {
+			console.log(e);
 		}
 	});
 
@@ -422,17 +466,21 @@ uploadSocketServer.listen(SOCKET_UP_PORT);
 var downloadSocketServer = SocketServer.createServer(function(socket) {
 
 	socket.on('data', function(message) {
-		var json = JSON.parse(message.toString());
-		var fileName = json.fileName;
-		var fileSize = json.fileSize;
+		try {
+			var json = JSON.parse(message.toString());
+			var fileName = json.fileName;
+			var fileSize = json.fileSize;
 
-		var readStream = fs.createReadStream(DEFAULT_PATH + fileName);
-		readStream.on('data', function(data) {
-			socket.write(data);
-		});
-		readStream.on('end', function() {
-			console.log("클라이언트에서 파일을 다운로드하였습니다.");
-		});
+			var readStream = fs.createReadStream(DEFAULT_PATH + fileName);
+			readStream.on('data', function(data) {
+				socket.write(data);
+			});
+			readStream.on('end', function() {
+				console.log("클라이언트에서 파일을 다운로드하였습니다.");
+			});
+		} catch (e) {
+			console.log(e);
+		}
 	});
 
 	socket.on('error', function(error) {
@@ -459,29 +507,33 @@ webSocketServer.on('request', function(request) {
 	var isFileData = false;
 
 	socket.on('message', function(message) {
-		if (!isFileData) {
-			var json = JSON.parse(message.utf8Data);
-			fileName = json.fileName; // 기존 파일명 + 확장자
-			fileName = getCurrentTime() + fileName.substr(fileName.lastIndexOf('.')).toLowerCase(); // 수정 파일명 + 확장자
-			fileSize = parseInt(json.fileSize); // 파일 크기
+		try {
+			if (!isFileData) {
+				var json = JSON.parse(message.utf8Data);
+				fileName = json.fileName; // 기존 파일명 + 확장자
+				fileName = getCurrentTime() + fileName.substr(fileName.lastIndexOf('.')).toLowerCase(); // 수정 파일명 + 확장자
+				fileSize = parseInt(json.fileSize); // 파일 크기
 
-			writeStream = fs.createWriteStream(DEFAULT_PATH + fileName);
-			check = 0;
-			isFileData = true;
+				writeStream = fs.createWriteStream(DEFAULT_PATH + fileName);
+				check = 0;
+				isFileData = true;
 
-			var obj = new Object();
-			obj.fileName = fileName;
-			obj.fileSize = fileSize;
-			var str = JSON.stringify(obj);
-			socket.sendUTF(str);
-		} else {
-			writeStream.write(message.binaryData);
-			check += message.binaryData.length;
-			if (check === fileSize) {
-				writeStream.end();
-				isFileData = false;
-				console.log("클라이언트에서 파일을 업로드하였습니다.");
+				var obj = new Object();
+				obj.fileName = fileName;
+				obj.fileSize = fileSize;
+				var str = JSON.stringify(obj);
+				socket.sendUTF(str);
+			} else {
+				writeStream.write(message.binaryData);
+				check += message.binaryData.length;
+				if (check === fileSize) {
+					writeStream.end();
+					isFileData = false;
+					console.log("클라이언트에서 파일을 업로드하였습니다.");
+				}
 			}
+		} catch (e) {
+			console.log(e);
 		}
 	});
 
