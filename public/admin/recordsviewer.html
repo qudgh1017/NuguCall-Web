@@ -22,7 +22,6 @@ $("#listArea2").append(test);
 
 //삭제 버튼을 누르면 deleteclick() 함수를 실행합니다.
 $("#DeleteButton").click(function(){
-	alert("왜 또 이게...");
 	deleteclick();
 });
 
@@ -45,7 +44,7 @@ function show_list(index){
 					tagList += "<td>" + this.sender + "</td>";
 					tagList += "<td>" + this.receiver + "</td>";
 					tagList += "<td>" + this.imei + "</td>";
-					tagList += "<td>" + this.time + "</td><td><input type=\"checkbox\" name=\"checkcheck\" value="+this.id+"></input></td>";
+					tagList += "<td>" + this.time + "</td><td><input type=\"checkbox\" id=\"checkcheck\" value="+this.id+"></input></td>";
 					tagList += "</tr>";
 				});
 				$("#listArea").empty();
@@ -133,7 +132,7 @@ function deleteclick(){
 	 */
 	function when_success() {
 		alert("통화기록이 삭제되었습니다.");
-		location.reload();
+		$("#contents").load("recordsviewer.html");
 	}
 	function when_not_success() {
 		alert("통화기록 삭제에 실패했습니다.");

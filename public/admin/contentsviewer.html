@@ -27,13 +27,11 @@
 
 		//등록 버튼을 누르면 insert.html로 이동합니다.
 		$("#InsertButton").click(function() {
-			alert("얜 되나...");
 			$("#contents").load("insert.html");
 		});
 		
 		//삭제 버튼을 누르면 deleteclick() 함수를 실행합니다.
 		$("#DeleteButton").click(function(){
-			alert("왜 또 이게...");
 			deleteclick();
 		});
 		function show_list(index) {
@@ -80,8 +78,8 @@
 								tagList+="<td align=\"center\"><img class=\"max-small\" src=\"http://115.145.170.56:8085/contents/"+this.source+"\" onclick=\"ImgShow(\'"+sourcename+"\')\"></td>";
 							}
 							tagList += "<td align=\"center\">" + this.imei + "</td>";
-							tagList += "<td align=\"center\"><input type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents(\'" + update_items + "\');\" style=\"background:transparent;\"></input>";
-							tagList+="<td align=\"center\"><input type=\"checkbox\" name=\"checkcheck\" value="+this.id+"></input></td>"
+							tagList += "<td><input class=\"buttonbutton2\" type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents(\'" + update_items + "\');\"></input>";
+							tagList+="<td align=\"center\"><input type=\"checkbox\" id=\"checkcheck\" value="+this.id+"></input></td>"
 							tagList += "</tr>";
 						});
 						//tagList를 붙입니다.
@@ -282,6 +280,17 @@ font-weight:700;
 	width:10%;
 	height:10%;
 }.buttonbutton:hover {
+	background-color:#8093FF;
+}
+.buttonbutton2 {
+	background-color:#1428A0;
+	border:none;
+	color:white;
+	text-align:center;
+	text-decoration:none;
+	display:inline-block;
+	cursor:pointer;
+}.buttonbutton2:hover {
 	background-color:#8093FF;
 }
 .tbstyle{
