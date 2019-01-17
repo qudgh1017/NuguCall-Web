@@ -1,41 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>누구콜 컨텐츠 등록</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewpoint" content="width=device-width, initial-scale=1" />
+<title>누구콜-컨텐츠등록</title>
 
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css" />
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:100,300,400,500,700,900&amp;subset=korean" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
+
+<style>
+div#top {
+	background-image: url("images/title2.png");
+	padding-bottom: calc(142/ 1417 * 100%);
+}
+
+#top2 {
+	padding: calc(142/ 1417 * 14%);
+	height: 30px;
+}
+
+#top3 {
+	padding: calc(142/ 1417 * 70%);
+}
+
+.insert_elements {
+	display: block;
+	margin-bottom: 20px;
+}
+
+.insert_description {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	color: #666666;
+}
+
+.insert_input {
+	width: 50%;
+	height: 25px;
+	padding: 10px;
+	border: 2px solid #cccccc;
+	text-align: center;
+}
+
+.insert_button {
+	width: 120px;
+	height: 40px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+</style>
 
 </head>
 <body>
-	<div data-role="page">
-		<div data-role="header">
-			<h4>컨텐츠 등록</h4>
+	<div id="contents">
+		<div class="insert_elements">
+			<p class="insert_description">이름</p>
+			<input class="insert_input" type="text" id="name" />
 		</div>
-		<div data-role="content">
-			<p>이름</p>
-			<input type="text" id="name" />
-			<p>문구</p>
-			<input type="text" id="text" />
-			<p>컨텐츠</p>
-			<input type="file" id="source" />
-			<p>전화번호</p>
-			<input type="text" id="phone" />
-			<p>IMEI</p>
-			<input type="text" id="imei" />
-			<div class="ui-grid-a">
-				<div class="ui-block-a">
-					<a href="#" data-role="button" id="apply">등록</a>
-				</div>
-				<div class="ui-block-b">
-					<a href="#" data-role="button" id="applycancel">취소</a>
-				</div>
-			</div>
+		<div class="insert_elements">
+			<p class="insert_description">문구</p>
+			<input class="insert_input" type="text" id="text" />
 		</div>
-		<div data-role="footer" data-position="fixed">
-			<h4>누구콜 프로젝트</h4>
+		<div class="insert_elements">
+			<p class="insert_description">컨텐츠</p>
+			<input class="insert_input" type="file" id="source" />
+		</div>
+		<div class="insert_elements">
+			<p class="insert_description">전화번호</p>
+			<input class="insert_input" type="text" id="phone" />
+		</div>
+		<div class="insert_elements">
+			<p class="insert_description">IMEI</p>
+			<input class="insert_input" type="text" id="imei" />
+		</div>
+		<div>
+			<button class="insert_button" id="apply">등 록</button>
+			<button class="insert_button" id="applycancel">취 소</button>
 		</div>
 	</div>
 </body>
@@ -53,7 +93,6 @@
 	var contentsImei;
 
 	function uploadContents() {
-
 		contentsName = $('#name').val();
 		contentsText = $('#text').val();
 		contentsSource = $('#source').val();
@@ -61,6 +100,7 @@
 		contentsImei = $('#imei').val();
 
 		if (contentsName === '' || contentsText === '' || contentsSource === '' || contentsPhone === '' || contentsImei === '') {
+			alert("빈 칸을 모두 채우세요.");
 			return;
 		}
 
@@ -99,7 +139,7 @@
 		var rawData = new ArrayBuffer();
 		reader.onload = function(e) {
 			rawData = e.target.result;
-			
+
 			var start = 0;
 			var end = 0;
 			var buffer = 65536;
@@ -142,6 +182,7 @@
 				} else {
 					alert("등록 중 오류가 발생하였습니다.");
 				}
+				$("#contents").load("contentsviewer.html");
 			},
 			error : function(e) {
 				console.log(e);
@@ -157,7 +198,7 @@
 
 		$("#applycancel").on('click', function() {
 			alert("등록을 취소하였습니다.");
-			history.back();
+			$("#contents").load("contentsviewer.html");
 		});
 
 	});
