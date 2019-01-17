@@ -34,72 +34,84 @@ app.all('/*', function(req, res, next) {
 	next();
 });
 
+// 본인 컨텐츠 삭제
 app.post("/delete_my_contents", function(request, response) {
 	request.on('data', function(data) {
 		deleteMyContents(data.toString(), response);
 	});
 });
 
+// 사용자 컨텐츠 삭제
 app.post("/delete_user_contents", function(request, response) {
 	request.on('data', function(data) {
 		deleteUserContents(data.toString(), response);
 	});
 });
 
+// 본인 컨텐츠 삽입
 app.post("/insert_my_contents", function(request, response) {
 	request.on('data', function(data) {
 		insertMyContents(data.toString(), response);
 	});
 });
 
+// 본인 컨텐츠 조회
 app.post("/select_my_contents", function(request, response) {
 	request.on('data', function(data) {
 		selectMyContents(data.toString(), response);
 	});
 });
 
+// 사용자 컨텐츠 조회
 app.post("/select_user_contents", function(request, response) {
 	request.on('data', function(data) {
 		selectUserContents(data.toString(), response);
 	});
 });
 
+// 상대 컨텐츠 조회
 app.post("/select_your_contents", function(request, response) {
 	request.on('data', function(data) {
 		selectYourContents(data.toString(), response);
 	});
 });
 
+// 본인 컨텐츠 수정
 app.post("/update_my_contents", function(request, response) {
 	request.on('data', function(data) {
 		updateMyContents(data.toString(), response);
 	});
 });
 
+// 사용자 컨텐츠 수정
 app.post("/update_user_contents", function(request, response) {
 	request.on('data', function(data) {
 		updateUserContents(data.toString(), response);
 	});
 });
 
+// 사용자 발신기록 삭제
 app.post("/delete_user_records", function(request, response) {
 	request.on('data', function(data) {
 		deleteUserRecords(data.toString(), response);
 	});
 });
 
+// 본인 발신기록 삽입
 app.post("/insert_my_records", function(request, response) {
 	request.on('data', function(data) {
 		insertMyRecords(data.toString(), response);
 	});
 });
 
+// 사용자 발신기록 조회
 app.post("/select_user_records", function(request, response) {
 	request.on('data', function(data) {
 		selectUserRecords(data.toString(), response);
 	});
 });
 
+// 상대 발신기록 조회
 app.post("/select_your_records", function(request, response) {
 	request.on('data', function(data) {
 		selectYourRecords(data.toString(), response);
@@ -445,7 +457,7 @@ var uploadSocketServer = SocketServer.createServer(function(socket) {
 				if (check === fileSize) {
 					writeStream.end();
 					isFileData = false;
-					console.log("클라이언트에서 파일을 업로드하였습니다.");
+					console.log("클라이언트(안드로이드)에서 파일을 업로드하였습니다.");
 				}
 			}
 		} catch (e) {
@@ -529,7 +541,7 @@ webSocketServer.on('request', function(request) {
 				if (check === fileSize) {
 					writeStream.end();
 					isFileData = false;
-					console.log("클라이언트에서 파일을 업로드하였습니다.");
+					console.log("클라이언트(웹)에서 파일을 업로드하였습니다.");
 				}
 			}
 		} catch (e) {
