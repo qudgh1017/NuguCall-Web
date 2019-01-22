@@ -1,3 +1,4 @@
+// 모듈 변수 선언
 var fs = require('fs');
 var http = require('http');
 var path = require('path');
@@ -6,21 +7,25 @@ var express = require('express');
 var SocketServer = require('net');
 var WebSocketServer = require('websocket').server;
 
+// 포트 정의
 var SOCKET_UP_PORT = 8081;
 var SOCKET_DOWN_PORT = 8082;
 
 var WEB_SERVER_PORT = 8085;
 
+// 컨텐츠가 저장될 기본 경로
 var DEFAULT_PATH = "./public/contents/";
 
+// MySQL 통신 변수 선언
 var connection = mysql.createConnection({
-	host : 'localhost',
-	user : 'root',
-	password : 'root',
-	database : 'nugucall',
+	host : 'localhost', // 내 컴퓨터
+	user : 'root', // 계정
+	password : 'root', // 비밀번호
+	database : 'nugucall', // 데이터베이스명
 	ssl : false
 });
 
+// 웹 서버 구동 (안드로이드 & 웹 Back-end DB 통신)
 var app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 var webServer = http.createServer(app);
@@ -66,6 +71,13 @@ app.post("/select_my_contents", function(request, response) {
 app.post("/select_user_contents", function(request, response) {
 	request.on('data', function(data) {
 		selectUserContents(data.toString(), response);
+	});
+});
+
+// 사용자 컨텐츠 개수 조회
+app.post("/select_user_contents_count", function(request, response) {
+	request.on('data', function(data) {
+		selectUserContentsCount(response);
 	});
 });
 
@@ -218,6 +230,27 @@ function selectUserContents(data, response) {
 		var sql = "select * from contents order by id desc limit ?, ?";
 		var inserts = [ data.start, data.count ];
 		var query = mysql.format(sql, inserts);
+
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+function selectUserContentsCount(response) {
+	try {
+		var sql = "select count(*) from contents";
+		var query = mysql.format(sql);
 
 		connection.query(query, function(error, results, fields) {
 			var json = new Object();
@@ -400,6 +433,7 @@ function selectYourRecords(data, response) {
 	}
 }
 
+// 현재 시각을 가져와서 파일 이름으로 설정
 function getCurrentTime() {
 	var date = new Date();
 	var year = date.getFullYear();
@@ -426,17 +460,18 @@ function getCurrentTime() {
 	return year + "" + month + "" + day + "" + hours + "" + minutes + "" + seconds;
 }
 
+// 안드로이드 파일 전송
 var uploadSocketServer = SocketServer.createServer(function(socket) {
 
 	var fileName;
 	var fileSize;
 	var writeStream;
 	var check;
-	var isFileData = false;
+	var isFileData = false; // 문자열 또는 이진 데이터 구분 
 
 	socket.on('data', function(message) {
 		try {
-			if (!isFileData) {
+			if (!isFileData) { // 처음에는 문자열 데이터 수신
 				var json = JSON.parse(message.toString());
 				fileName = json.fileName; // 기존 파일명 + 확장자
 				fileName = getCurrentTime() + fileName.substr(fileName.lastIndexOf('.')).toLowerCase(); // 수정 파일명 + 확장자
@@ -444,14 +479,14 @@ var uploadSocketServer = SocketServer.createServer(function(socket) {
 
 				writeStream = fs.createWriteStream(DEFAULT_PATH + fileName);
 				check = 0;
-				isFileData = true;
+				isFileData = true; // 이진 데이터 수신으로 변경
 
 				var obj = new Object();
 				obj.fileName = fileName;
 				obj.fileSize = fileSize;
 				var str = JSON.stringify(obj);
-				socket.write(str + "\n", 'utf8');
-			} else {
+				socket.write(str + "\n", 'utf8'); // 시작하자 알림
+			} else { // 이진 데이터 수신
 				writeStream.write(message);
 				check += message.length;
 				if (check === fileSize) {
@@ -475,6 +510,7 @@ var uploadSocketServer = SocketServer.createServer(function(socket) {
 });
 uploadSocketServer.listen(SOCKET_UP_PORT);
 
+// 안드로이드 파일 전송
 var downloadSocketServer = SocketServer.createServer(function(socket) {
 
 	socket.on('data', function(message) {
@@ -505,6 +541,7 @@ var downloadSocketServer = SocketServer.createServer(function(socket) {
 });
 downloadSocketServer.listen(SOCKET_DOWN_PORT);
 
+// 웹 파일 전송
 var webSocketServer = new WebSocketServer({
 	httpServer : webServer,
 });
