@@ -104,7 +104,7 @@ div#top {
 			return;
 		}
 
-		webSocket = new WebSocket("ws://115.145.170.56:8085", "nugucall");
+		webSocket = new WebSocket("ws://115.145.171.157:8085", "nugucall");
 		webSocket.binaryType = "arraybuffer";
 		webSocket.onopen = function(open) {
 			console.log("WebSocket 연결 성공");
@@ -172,7 +172,7 @@ div#top {
 
 		$.ajax({
 			type : "post",
-			url : "http://115.145.170.56:8085/insert_my_contents",
+			url : "http://115.145.171.157:8085/insert_my_contents",
 			data : JSON.stringify(json),
 			dataType : "json",
 			success : function(json) {

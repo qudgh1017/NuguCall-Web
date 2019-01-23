@@ -34,7 +34,7 @@
 		$.ajax({
 			type : "post",
 			data : JSON.stringify(json),
-			url : "http://115.145.170.56:8085/select_user_records",
+			url : "http://115.145.171.157:8085/select_user_records",
 			dataType : "json",
 			success : function(json) {
 				var result = json.result;
@@ -90,7 +90,7 @@
 		json2.id = result;
 		$.ajax({
 			type : "post",
-			url : "http://115.145.170.56:8085/delete_user_records",
+			url : "http://115.145.171.157:8085/delete_user_records",
 			data : JSON.stringify(json2),
 			dataType : "json",
 			success : function(json2) {

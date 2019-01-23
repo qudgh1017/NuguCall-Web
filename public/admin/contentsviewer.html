@@ -47,7 +47,7 @@
 		$.ajax({
 			type : "post",
 			data : JSON.stringify(jsonlist),
-			url : "http://115.145.170.56:8085/select_user_contents",
+			url : "http://115.145.171.157:8085/select_user_contents",
 			dataType : "json",
 			success : function(jsonlist) {
 				var result = jsonlist.result;
@@ -73,9 +73,9 @@
 						var fileext = this.source;
 						fileext = fileext.slice(fileext.indexOf(".") + 1).toLowerCase();
 						if (fileext == "mp4") {
-							tagList += "<td align=\"center\"><video controls class=\"max-small\" src=\"http://115.145.170.56:8085/contents/" + this.source + "\"></video></td>";
+							tagList += "<td align=\"center\"><video controls class=\"max-small\" src=\"http://115.145.171.157:8085/contents/" + this.source + "\"></video></td>";
 						} else {
-							tagList += "<td align=\"center\"><img class=\"max-small\" src=\"http://115.145.170.56:8085/contents/" + this.source + "\" onclick=\"ImgPopup(\'" + sourcename + "\')\"></td>";
+							tagList += "<td align=\"center\"><img class=\"max-small\" src=\"http://115.145.171.157:8085/contents/" + this.source + "\" onclick=\"ImgPopup(\'" + sourcename + "\')\"></td>";
 						}
 						tagList += "<td align=\"center\">" + this.imei + "</td>";
 						tagList += "<td><input class=\"buttonbutton2\" type=\"button\" value=\"수정\" id=\"Update\" onclick=\"Update_contents(\'" + update_items + "\');\"></input>";
@@ -139,7 +139,7 @@
 		jsonupdate.imei = $('#updateimei').val();
 		$.ajax({
 			type : "post",
-			url : "http://115.145.170.56:8085/update_user_contents",
+			url : "http://115.145.171.157:8085/update_user_contents",
 			data : JSON.stringify(jsonupdate),
 			dataType : "json",
 			success : function(jsonupdate) {
@@ -180,7 +180,7 @@
 		jsondelete.id = delete_id;
 		$.ajax({
 			type : "post",
-			url : "http://115.145.170.56:8085/delete_user_contents",
+			url : "http://115.145.171.157:8085/delete_user_contents",
 			data : JSON.stringify(jsondelete),
 			dataType : "json",
 			success : function(jsondelete) {
@@ -204,7 +204,7 @@
 	//클릭 시 이미지가 보여지는 기능을 하는 함수입니다.
 	function ImgPopup(img) {
 		var imgsource = "";
-		imgsource += "<img src=\"http://115.145.170.56:8085/contents/" + img + "\" onclick=\"ImgPopupreturn()\">";
+		imgsource += "<img src=\"http://115.145.171.157:8085/contents/" + img + "\" onclick=\"ImgPopupreturn()\">";
 		$("#contentsmain").hide();
 		$("#imgshow").show();
 		$("#listArea4").empty();
