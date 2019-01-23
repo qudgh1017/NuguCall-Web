@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" name="viewpoint" content="width=device-width, initial-scale=1" />
+<title>누구콜_메인</title>
+
+<link rel="stylesheet" href="nugucall.css">
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:100,300,400,500,700,900&amp;subset=korean" rel="stylesheet">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="http://malsup.github.com/jquery.cycle2.js"></script>
+
+</head>
+
+<body>
+	<div id="wrapper">
+		<header>
+			<img class="first_header" src="images/누구콜_1.png" onclick="topclick();">
+			<div id="second_header">
+				<input id="main_button" class="menu_button" type="button" value="메인화면"></input>
+				<input id="records_list_button" class="menu_button" type="button" value="통화기록조회"></input>
+				<input id="contents_list_button" class="menu_button" type="button" value="컨텐츠조회"></input>
+			</div>
+			<div id="second_header2">
+				<button id="menu_list_button" class="menu_button2">메뉴</button>
+				<div id="show_menu_list">
+					<input id="main_button2" class="menu_button3" type="button" value="메인화면"></input>
+					<input id="records_list_button2" class="menu_button3" type="button" value="통화기록조회"></input>
+					<input id="contents_list_button2" class="menu_button3" type="button" value="컨텐츠조회"></input>
+				</div>
+			</div>
+		</header>
+		
+		<section>
+			<article id="contents">
+				<div id="mainpage_viewer">
+					<div id="sliding" class="cycle-slideshow">
+						<img class="slideimg" src="mainimage.jpg">
+						<img class="slideimg" src="mainimage2.jpg">
+					</div>
+				</div>
+				
+				<div id="records_viewer">
+					<div id="beforetable">
+						<span class="page_name">통화기록조회</span>
+						<span class="page_name2">  Records</span>
+						<br/><br/>
+						<div class="line"></div>
+						<br/><br/>
+						<div style="text-align: left;">
+							<input class="buttonbutton" type="button" id="DeleteButton_records" value="삭제"></input>
+						</div>
+					</div>
+					<table class="tbstyle" data-role="listview" id="listArea" data-inset="true"></table>
+					<div style="position: fixed; bottom: 5px; width: 100%;" data-role="listview" id="listArea2" data-inset="true"></div>
+					<a href="#" class="toptop"><img src="images/up.png" style="width: 30px;"></a>
+				</div>
+				
+				<div id="contents_viewer">
+					<div style="text-align: left;">
+						<input class="buttonbutton" type="button" id="InsertButton" value="등록"></input>
+						<input class="buttonbutton" type="button" id="DeleteButton_contents" value="삭제"></input>
+						<br /><br />이미지 클릭 시 사진을 원본 사이즈로 볼 수 있으며, 다시 클릭하면 원래대로 돌아옵니다.<br />
+					</div>
+					<table class="tbstyle" data-role="listview" id="listArea3" data-inset="true"></table>
+					<div style="position: fixed; bottom: 5px; width: 100%;" data-role="listview" id="listArea4" data-inset="true"></div>
+					<a href="#" class="toptop"><img src="images/up.png" style="width: 30px;"></a>
+				</div>
+				
+				<div id="insert_viewer">
+					<div class="insert_elements">
+						<p class="insert_description">이름</p>
+						<input class="insert_input" type="text" id="name" />
+					</div>
+					<div class="insert_elements">
+						<p class="insert_description">문구</p>
+						<input class="insert_input" type="text" id="text" />
+					</div>
+					<div class="insert_elements">
+						<p class="insert_description">컨텐츠</p>
+						<input class="insert_input" type="file" id="source" />
+					</div>
+					<div class="insert_elements">
+						<p class="insert_description">전화번호</p>
+						<input class="insert_input" type="text" id="phone" />
+					</div>
+					<div class="insert_elements">
+						<p class="insert_description">IMEI</p>
+						<input class="insert_input" type="text" id="imei" />
+					</div>
+					<div>
+						<button class="insert_button" id="apply">등 록</button>
+						<button class="insert_button" id="applycancel">취 소</button>
+					</div>
+				</div>
+				
+				<div id="update_viewer">
+					<div class="insert_elements">
+						<p class="insert_description">이름</p>
+						<input class="insert_input" type="text" id="updatename" />
+					</div>
+					<div class="insert_elements">
+						<p class="insert_description">문구</p>
+						<input class="insert_input" type="text" id="updatetext" />
+					</div>
+					<div class="insert_elements">
+						<p class="insert_description">컨텐츠</p>
+						<input class="insert_input" type="file" id="updatesource" />
+					</div>
+					<div class="insert_elements">
+						<p class="insert_description">전화번호</p>
+						<input class="insert_input" type="text" id="updatephone" />
+					</div>
+					<div class="insert_elements">
+						<p class="insert_description">IMEI</p>
+						<input class="insert_input" type="text" id="updateimei" />
+					</div>
+					<div>
+						<button class="insert_button" id="upload">수 정</button>
+						<button class="insert_button" id="uploadcancel">취 소</button>
+					</div>
+				</div>
+			</article>
+		</section>
+	</div>
+	
+	<div id="loading">
+		<img id="loading-image" src="images/ajax-loader.gif" alt="Loading..." />
+	</div>
+</body>
+
+<script type="text/javascript">
+
+	//후에 파일 전송 시에 쓰일 변수들입니다.
+	var webSocket;
+	
+	var source;
+	
+	var contentsId;
+	var contentsName;
+	var contentsText;
+	var contentsSource;
+	var contentsSize;
+	var contentsPhone;
+	var contentsImei;
+
+	//후에 등록/수정 시에 쓰일 변수입니다.
+	var insert_update=0;
+
+	//로딩화면 구성입니다.
+	$(window).load(function() {    
+		$('#loading').hide();  
+	});
+
+	//상단 배너 이미지를 클릭하면 메인화면으로 돌아갑니다.
+	function topclick() {
+		$("#mainpage_viewer").show();
+		$("#records_viewer").hide();
+		$("#contents_viewer").hide();
+		$("#insert_viewer").hide();
+		$("#update_viewer").hide();
+	}
+	
+	//통화기록을 받아오는 함수입니다.
+	function show_records_list(index) {
+		var json = new Object();
+		json.start = (index - 1) * 5;
+		json.count = 5;
+		var tagList = "<tr><th width=100>일련번호</th><th width=100>발신자 전화번호</th>";
+		tagList+="<th width=100>수신자 전화번호</th><th width=100>발신자 IMEI</th>";
+		tagList+="<th width=100>발신 시각</th><th>삭제</th></tr>";
+		$.ajax({
+			type : "post",
+			data : JSON.stringify(json),
+			url : "http://115.145.171.157:8085/select_user_records",
+			dataType : "json",
+			success : function(json) {
+				var result = json.result;
+				if (result == "1") {
+					$.each(json.items, function() {
+						tagList += "<tr>";
+						tagList += "<td>" + this.id + "</td>";
+						tagList += "<td>" + this.sender + "</td>";
+						tagList += "<td>" + this.receiver + "</td>";
+						tagList += "<td>" + this.imei + "</td>";
+						tagList += "<td>" + this.time + "</td>";
+						tagList+="<td><input type='checkbox' id='checkcheck' value="+this.id+"></input></td>";
+						tagList += "</tr>";
+					});
+					$("#listArea").empty();
+					$("#listArea").append(tagList);
+				} else {
+					alert("통화기록 조회 중 오류가 발생하였습니다.");
+				}
+			},
+			error : function(e) {
+				console.log(e.responseText);
+			}
+		});
+	}
+	
+	//삭제 버튼을 눌렀을 때 실행되는 함수입니다.
+	//체크 표시가 되어 있는 항목들에 대해 모두 delete_contents() 함수를 실행시킵니다.
+	function deleteclick_records() {
+		var con_test3 = confirm("선택된 컨텐츠를 모두 삭제하시겠습니까?");
+		if (con_test3 == true) {
+			for (i = 0; i < 3; i++) {
+				if (checkcheck[i].checked == true) {
+					delete_records(checkcheck[i].value);
+				}
+			}
+		} else if (con_test3 == false) {
+			alert("컨텐츠 삭제를 취소하였습니다.")
+		}
+	}
+	
+	//서버로 삭제할 데이터를 보내서 삭제를 합니다.
+	function delete_records(result) {
+		var json2 = new Object();
+		json2.id = result;
+		$.ajax({
+			type : "post",
+			url : "http://115.145.171.157:8085/delete_user_records",
+			data : JSON.stringify(json2),
+			dataType : "json",
+			success : function(json2) {
+				var result = json2.result;
+				if (result == "1") {
+					when_success();
+				} else {
+					when_not_success();
+				}
+			},
+			error : function(e) {
+				console.log(e.responseText);
+			}
+		});
+	}
+	
+	//통화기록이 삭제에 성공하였을 때와 실패하였을 때 문구를 다르게 합니다.
+	function when_success() {
+		alert("통화기록이 삭제되었습니다.");
+		location.reload();
+	}
+	function when_not_success() {
+		alert("통화기록 삭제에 실패했습니다.");
+	}
+	
+	//컨텐츠 목록을 받아오는 함수입니다.
+	function show_contents_list(index) {
+		var jsonlist = new Object();
+
+		//임의로 start값과 count 값을 지정하였고, 바뀔 예정입니다.
+		jsonlist.start = (index - 1) * 5;
+		jsonlist.count = 5;
+
+		//tagList에 테이블의 구성요소들을 서버로부터 받아온 데이터를 통해 계속 채웁니다.
+		var tagList = "<tr><th width=10%>등록번호</th><th width=10%>이름</th>";
+		tagList+="<th width=15%>전화번호</th><th width=15%>사용자 문구</th>";
+		tagList+="<th width=20%>컨텐츠</th><th width=15%>IMEI</th>";
+		tagList+="<th width=7%>수정</th><th width=7%>삭제</th></tr>";
+		$.ajax({
+			type : "post",
+			data : JSON.stringify(jsonlist),
+			url : "http://115.145.171.157:8085/select_user_contents",
+			dataType : "json",
+			success : function(jsonlist) {
+				var result = jsonlist.result;
+				if (result == "1") {
+					$.each(jsonlist.items, function() {
+						//update_items는 Update_contents() 함수의 구성요소들을 붙여갑니다.
+						var update_items = "";
+						update_items += this.id + "\',\'";
+						update_items += this.name + "\',\'";
+						update_items += this.phone + "\',\'";
+						update_items += this.text + "\',\'";
+						update_items += this.source + "\',\'";
+						update_items += this.imei;
+						//tagList += "<tr><td><input type=\"checkbox\" name=\"checkcheck\" value="+this.id+"></input></td>";
+						tagList += "<tr><td width=10%>" + this.id + "</td>";
+						tagList += "<td width=10%>" + this.name + "</td>";
+						tagList += "<td width=15%>" + this.phone + "</td>";
+						tagList += "<td width=15%>" + this.text + "</td>";
+
+						//이미지나 동영상의 경우 확장자를 확인한 후(현재까지는 다른 파일들과 mp4만 구분합니다.) 이미지를 표시할지 동영상을 표시할지 선택합니다.
+						//동영상의 경우 재생버튼 추가를 위해 controls 속성을 넣었으나 동영상을 제대로 받지 못한 상태입니다.
+						var sourcename = this.source;
+						var fileext = this.source;
+						fileext = fileext.slice(fileext.indexOf(".") + 1).toLowerCase();
+						if (fileext == "mp4") {
+							tagList += "<td width=20%><video controls class='max-small'";
+							tagList+=" src='http://115.145.171.157:8085/contents/" + this.source + "'></video></td>";
+						} else {
+							tagList += "<td width=20%><img class='max-small' src='http://115.145.171.157:8085/contents/" + this.source + "'></td>";
+						}
+						tagList += "<td width=15%>" + this.imei + "</td>";
+						tagList += "<td width=7%><input class='buttonbutton2' number='" + this.id + "' type='button' value='수정' id='Update' onclick=\"update_contents('" + this.id + "');\"></input></td>";
+						tagList += "<td width=7%><input type='checkbox' id='checkcheck' value=" + this.id + "></input></td>";
+						tagList += "</tr>";
+					});
+					// tagList를 붙입니다.
+					$("#listArea3").empty();
+					$("#listArea3").append(tagList);
+				} else {
+					alert("컨텐츠 기록 조회 중 오류가 발생하였습니다.");
+				}
+			},
+			error : function(e) {
+				console.log(e.responseText);
+			}
+		});
+	}
+	
+	//컨텐츠 삭제 관련 함수들입니다.
+	//삭제 버튼을 눌렀을 때 실행되는 함수입니다.
+	//체크 표시가 되어 있는 항목들에 대해 모두 delete_contents() 함수를 실행시킵니다.
+	function deleteclick_contents() {
+		var con_test3 = confirm("선택된 컨텐츠를 모두 삭제하시겠습니까?");
+		if (con_test3 == true) {
+			for (i = 0; i < 3; i++) {
+				if (checkcheck[i].checked == true) {
+					delete_contents(checkcheck[i].value);
+				}
+			}
+		} else if (con_test3 == false) {
+			alert("컨텐츠 삭제를 취소하였습니다.")
+		}
+	}
+
+	//선택된 항목을 하나하나 서버로 보내서 삭제시킵니다.
+	function delete_contents(delete_id) {
+		var jsondelete = new Object();
+		jsondelete.id = delete_id;
+		$.ajax({
+			type : "post",
+			url : "http://115.145.171.157:8085/delete_user_contents",
+			data : JSON.stringify(jsondelete),
+			dataType : "json",
+			success : function(jsondelete) {
+				var result = jsondelete.result;
+				if (result == "1") {
+					alert("컨텐츠가 삭제되었습니다.");
+					location.reload();
+				} else {
+					alert("컨텐츠 삭제에 실패하였습니다.");
+				}
+			},
+			error : function(e) {
+				console.log(e.responseText);
+			}
+		});
+	}
+	
+	//수정 시에 쓰일 함수입니다.
+	function update_contents(index){
+		contentsId=index;
+		$("#update_viewer").show();
+		$("#contents_viewer").hide();
+	}
+	
+	//맨 위로 버튼 함수입니다.
+	$(window).scroll(function() {
+		if ($(this).scrollTop() >= 0) {
+			$('.toptop').fadeIn();
+		} else {
+			$('.toptop').fadeout();
+		}
+	});
+	$('.toptop').click(function() {
+		$('html,body').animate({
+			scrollTop : 0
+		}, 400);
+		return false;
+	});
+	
+	
+	
+	//Insert/Update하는 함수입니다.
+
+
+	function uploadContents() {
+		if(insert_update==0){
+			contentsName = $('#name').val();
+			contentsText = $('#text').val();
+			contentsSource = $('#source').val();
+			contentsPhone = $('#phone').val();
+			contentsImei = $('#imei').val();
+		}
+		else{
+			contentsName = $('#updatename').val();
+			contentsText = $('#updatetext').val();
+			contentsSource = $('#updatesource').val();
+			contentsPhone = $('#updatephone').val();
+			contentsImei = $('#updateimei').val();
+		}
+
+		if (contentsName === '' || contentsText === '' || contentsSource === '' || contentsPhone === '' || contentsImei === '') {
+			alert("빈 칸을 모두 채우세요.");
+			return;
+		}
+
+		webSocket = new WebSocket("ws://115.145.171.157:8085", "nugucall");
+		webSocket.binaryType = "arraybuffer";
+		webSocket.onopen = function(open) {
+			console.log("WebSocket 연결 성공");
+			onWebSocketOpen();
+		}
+		webSocket.onmessage = function(message) {
+			onWebSocketMessage(message);
+		}
+		webSocket.onerror = function(error) {
+			console.log("WebSocket 오류 발생");
+		}
+		webSocket.onclose = function(close) {
+			console.log("WebSocket 연결 종료");
+		}
+	}
+
+	function onWebSocketOpen() {
+		if(insert_update==0){
+			source = $('#source')[0].files[0];
+		}
+		else{
+			source = $('#updatesource')[0].files[0];
+		}
+		var json = new Object();
+		json.fileName = source.name;
+		json.fileSize = source.size;
+		var str = JSON.stringify(json);
+		webSocket.send(str);
+	}
+
+	function onWebSocketMessage(message) {
+		var json = JSON.parse(message.data);
+		contentsSource = json.fileName;
+		contentsSize = json.fileSize;
+
+		var reader = new FileReader();
+		var rawData = new ArrayBuffer();
+		reader.onload = function(e) {
+			rawData = e.target.result;
+
+			var start = 0;
+			var end = 0;
+			var buffer = 65536;
+			while (true) {
+				end = start + buffer;
+				if (end < contentsSize) {
+					webSocket.send(rawData.slice(start, end));
+				} else {
+					webSocket.send(rawData.slice(start, contentsSize));
+					break;
+				}
+				start = end;
+			}
+		}
+		reader.onloadend = function() {
+			console.log("파일 전송이 완료됐습니다.");
+			if(insert_update==0){
+				insertContents();
+			}
+			else{
+				updateContents();
+			}
+		}
+		reader.readAsArrayBuffer(source);
+	}
+
+	function insertContents() {
+		var json = new Object();
+		json.name = contentsName;
+		json.phone = contentsPhone;
+		json.text = contentsText;
+		json.source = contentsSource;
+		json.size = contentsSize;
+		json.imei = contentsImei;
+
+		$.ajax({
+			type : "post",
+			url : "http://115.145.171.157:8085/insert_my_contents",
+			data : JSON.stringify(json),
+			dataType : "json",
+			success : function(json) {
+				var result = json.result;
+				if (result == "1") {
+					alert("등록되었습니다.");
+					location.reload();
+				} else {
+					alert("등록 중 오류가 발생하였습니다.");
+				}
+				$("#contents").load("contentsviewer.html");
+			},
+			error : function(e) {
+				console.log(e);
+			}
+		});
+	}
+	
+	function updateContents() {
+		var json = new Object();
+		json.id=contentsId;
+		json.name = contentsName;
+		json.phone = contentsPhone;
+		json.text = contentsText;
+		json.source = contentsSource;
+		json.size = contentsSize;
+		json.imei = contentsImei;
+
+		$.ajax({
+			type : "post",
+			url : "http://115.145.171.157:8085/update_user_contents",
+			data : JSON.stringify(json),
+			dataType : "json",
+			success : function(json) {
+				var result = json.result;
+				if (result == "1") {
+					alert("수정되었습니다.");
+					location.reload();
+				} else {
+					alert("수정 중 오류가 발생하였습니다.");
+				}
+				$("#contents").load("contentsviewer.html");
+			},
+			error : function(e) {
+				console.log(e);
+			}
+		});
+	}
+	
+	function gettingcount(){
+		var json = new Object();
+		$.ajax({
+			type : "post",
+			url : "http://115.145.171.157:8085/select_user_contents_count",
+			data : JSON.stringify(json),
+			dataType : "json",
+			success : function(json) {
+				var result = json.result;
+				if (result == "1") {
+					$.each(json.items,function(){
+						var count="";
+						count+="숫자 받는 기능이 안됩니다...ㅠ...";
+						alert(count);
+					});
+				} else {
+					alert("연결 중 오류가 발생하였습니다.");
+				}
+			},
+			error : function(e) {
+				console.log(e);
+			}
+		});
+	}
+	
+	
+	
+	$(document).ready(function(){
+		
+		//초기화면은 메인화면으로 설정합니다.
+		$("#records_viewer").hide();
+		$("#contents_viewer").hide();
+		$("#insert_viewer").hide();
+		$("#update_viewer").hide();
+		
+		//화면 폭이 작을 경우 나타나는 메뉴 리스트 영역도 숨깁니다.
+		$("#show_menu_list").hide();
+	
+		//상단 배너 영역의 높이를 구하여 하단 영역의 위치를 조정합니다.
+		//화면의 폭에 따라 메뉴화면의 구성을 변경하는 menuwidth()함수도 포함됩니다.
+		var m=document.querySelector("article");
+		var h=document.querySelector("header");
+		var hHeight;
+		
+		function menuwidth(){
+			var windowWidth=document.body.offsetWidth;
+			if(windowWidth>700){
+				$('#second_header2').hide();
+				$('#second_header').show();
+			}
+			else{
+				$('#second_header').hide();
+				$('#second_header2').show();
+			}
+		}
+
+		function setTopPadding(){
+			hHeight=h.offsetHeight;
+			m.style.paddingTop=hHeight+"px";
+		}
+
+		window.onload = function() {
+			menuwidth();
+			setTopPadding();
+		};
+		 
+		window.onresize = function() {
+			menuwidth();
+			setTopPadding();
+		}
+		
+		//화면 폭이 작을 경우 메뉴버튼의 형태와 역할을 명시합니다.
+		$("#second_header2").hover(function(){
+			$('#show_menu_list').show();
+			$("#main_button2").click(function() {
+				$("#mainpage_viewer").show();
+				$("#records_viewer").hide();
+				$("#contents_viewer").hide();
+				$("#insert_viewer").hide();
+				$("#update_viewer").hide();
+			});
+			$("#records_list_button2").click(function() {
+				$("#records_viewer").show();
+				$("#mainpage_viewer").hide();
+				$("#contents_viewer").hide();
+				$("#insert_viewer").hide();
+				$("#update_viewer").hide();
+			});
+			$("#contents_list_button2").click(function() {
+				$("#contents_viewer").show();
+				$("#mainpage_viewer").hide();
+				$("#records_viewer").hide();
+				$("#insert_viewer").hide();
+				$("#update_viewer").hide();
+			});
+			$("#show_menu_list").hover(function(){
+				$('#show_menu_list').show();
+			})
+		},function(){
+			$('#show_menu_list').hide();
+		});
+	
+		//화면 폭이 클 경우 메뉴버튼의 형태와 역할을 명시합니다.
+		$("#main_button").click(function() {
+			$("#mainpage_viewer").show();
+			$("#records_viewer").hide();
+			$("#contents_viewer").hide();
+			$("#insert_viewer").hide();
+			$("#update_viewer").hide();
+		});
+		$("#records_list_button").click(function() {
+			$("#records_viewer").show();
+			$("#mainpage_viewer").hide();
+			$("#contents_viewer").hide();
+			$("#insert_viewer").hide();
+			$("#update_viewer").hide();
+		});
+		$("#contents_list_button").click(function() {
+			$("#contents_viewer").show();
+			$("#mainpage_viewer").hide();
+			$("#records_viewer").hide();
+			$("#insert_viewer").hide();
+			$("#update_viewer").hide();
+		});
+		
+		
+		//여기서부터는 Records 화면 부분입니다.
+		
+		//임의의 제목만 명시하는 테이블을 숨깁니다.
+		//$('#hiddentable').hide();
+		
+		//처음 실행 시에는 첫 번째 통화기록 목록을 보여주기 위해 show_records_list(1) 함수를 실행합니다.
+		show_records_list(1);
+		
+		//하단에 붙을 목록번호를 표시합니다.
+		var test = "";
+		for (i = 1; i < 10; i++) {
+			var test1 = "";
+			test1 += i;
+			if(i==1){
+				test += "<div id='ck-button'><label><input type='radio' name='record_list_button' id='record_list_button' value="+test1+" checked><span>"+test1+"</span></label></div>";
+			}
+			else{
+				test += "<div id='ck-button'><label><input type='radio' name='record_list_button' id='record_list_button' value="+test1+"><span>"+test1+"</span></label></div>";
+			}
+		}
+		$("#listArea2").append(test);
+		
+		$("input:radio").on('click',function(){
+			var record_list_val=$('input[name="record_list_button"]:checked').val();
+			show_records_list(record_list_val);
+		});
+		
+		//삭제 버튼을 누르면 deleteclick() 함수를 실행합니다.
+		$("#DeleteButton_records").click(function() {
+			deleteclick_records();
+		});
+		
+		
+		//여기서부터는 Contents 화면 부분입니다.
+		
+		//처음 실행 시에는 첫 번째 컨텐츠 목록을 보여주기 위해 show_contents_list(1) 함수를 실행합니다.
+		show_contents_list(1);
+		
+		//하단에 목록 번호를 붙이는 과정. 목록 개수는 임의로 10개라고 정했지만 나중에 전체 목록 개수를 받을 수 있게 되면 달라질 예정입니다.
+		//각 목록 번호를 클릭하면 각 번호에 따라 show_contents_list(i) 함수를 실행하게 됩니다.
+		var test = "";
+		for (i = 1; i < 10; i++) {
+			var test1 = "";
+			test1 += i;
+			if(i==1){
+				test += "<div id='ck-button'><label><input type='radio' name='content_list_button' id='content_list_button' value="+test1+" checked><span>"+test1+"</span></label></div>";
+			}
+			else{
+				test += "<div id='ck-button'><label><input type='radio' name='content_list_button' id='content_list_button' value="+test1+"><span>"+test1+"</span></label></div>";
+			}
+		}
+		$("#listArea4").append(test);
+		$("input:radio").on('click',function(){
+			var content_list_val=$('input[name="content_list_button"]:checked').val();
+			show_contents_list(content_list_val);
+		});
+		
+		//등록 버튼을 누르면 등록화면이 보여집니다.
+		$("#InsertButton").click(function(){
+			$("#insert_viewer").show();
+			$("#contents_viewer").hide();
+		});
+		
+		$("#DeleteButton_contents").click(function() {
+			deleteclick_contents();
+		});
+		
+		
+		//여기서부터는 Insert 화면 부분입니다.
+		$("#apply").on('click', function() {
+			insert_update=0;
+			uploadContents();
+		});
+
+		$("#applycancel").on('click', function() {
+			alert("등록을 취소하였습니다.");
+			$("#contents_viewer").show();
+			$("#insert_viewer").hide();
+		});
+		
+		//여기서부터는 Update 화면 부분입니다.
+		$("#upload").on('click', function() {
+			insert_update=1;
+			uploadContents();
+		});
+
+		$("#uploadcancel").on('click', function() {
+			alert("수정을 취소하였습니다.");
+			$("#contents_viewer").show();
+			$("#update_viewer").hide();
+		});
+	});
+</script>
+</html>
