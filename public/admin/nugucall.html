@@ -35,8 +35,8 @@
 			<article id="contents">
 				<div id="mainpage_viewer">
 					<div id="sliding" class="cycle-slideshow">
-						<img class="slideimg" src="mainimage.jpg">
-						<img class="slideimg" src="mainimage2.jpg">
+						<img class="slideimg" src="images/mainimage.jpg">
+						<img class="slideimg" src="images/mainimage2.jpg">
 					</div>
 				</div>
 				
@@ -44,80 +44,79 @@
 					<div id="beforetable">
 						<span class="page_name">통화기록조회</span>
 						<span class="page_name2">  Records</span>
-						<br/><br/>
+						<br/>
 						<div class="line"></div>
-						<br/><br/>
+						<br/>
 						<div style="text-align: left;">
 							<input class="buttonbutton" type="button" id="DeleteButton_records" value="삭제"></input>
 						</div>
+						<table class="tbstyle">
+							<tr>
+								<th width=100>일련번호</th>
+								<th width=100>발신자 전화번호</th>
+								<th width=100>수신자 전화번호</th>
+								<th width=100>발신자 IMEI</th>
+								<th width=100>발신 시각</th>
+								<th>삭제</th>
+							</tr>
+						</table>
 					</div>
-					<table class="tbstyle" data-role="listview" id="listArea" data-inset="true"></table>
+					<div id="flex-area">
+						<table class="tbstyle" data-role="listview" id="listArea" data-inset="true"></table>
+					</div>
 					<div style="position: fixed; bottom: 5px; width: 100%;" data-role="listview" id="listArea2" data-inset="true"></div>
 					<a href="#" class="toptop"><img src="images/up.png" style="width: 30px;"></a>
 				</div>
 				
 				<div id="contents_viewer">
-					<div style="text-align: left;">
-						<input class="buttonbutton" type="button" id="InsertButton" value="등록"></input>
-						<input class="buttonbutton" type="button" id="DeleteButton_contents" value="삭제"></input>
-						<br /><br />이미지 클릭 시 사진을 원본 사이즈로 볼 수 있으며, 다시 클릭하면 원래대로 돌아옵니다.<br />
+					<div id="beforetable">
+						<span class="page_name">컨텐츠조회</span>
+						<span class="page_name2">  Contents</span>
+						<br/>
+						<div class="line"></div>
+						<br/>
+						<div style="text-align: left;">
+							<input class="buttonbutton" type="button" id="InsertButton" value="등록"></input>
+							<input class="buttonbutton" type="button" id="DeleteButton_contents" value="삭제"></input>
+							<br /><br />이미지 클릭 시 사진을 원본 사이즈로 볼 수 있으며, 다시 클릭하면 원래대로 돌아옵니다.
+						</div>
+						<table class="tbstyle">
+							<tr>
+								<th width=10%>등록번호</th>
+								<th width=10%>이름</th>
+								<th width=15%>전화번호</th>
+								<th width=15%>사용자 문구</th>
+								<th width=20%>컨텐츠</th>
+								<th width=15%>IMEI</th>
+								<th width=7%>수정</th>
+								<th width=7%>삭제</th>
+							</tr>
+						</table>
 					</div>
-					<table class="tbstyle" data-role="listview" id="listArea3" data-inset="true"></table>
+					<div id="flex-area2">
+						<table class="tbstyle" data-role="listview" id="listArea3" data-inset="true"></table>
+					</div>
 					<div style="position: fixed; bottom: 5px; width: 100%;" data-role="listview" id="listArea4" data-inset="true"></div>
 					<a href="#" class="toptop"><img src="images/up.png" style="width: 30px;"></a>
 				</div>
 				
 				<div id="insert_viewer">
-					<div class="insert_elements">
-						<p class="insert_description">이름</p>
-						<input class="insert_input" type="text" id="name" />
-					</div>
-					<div class="insert_elements">
-						<p class="insert_description">문구</p>
-						<input class="insert_input" type="text" id="text" />
-					</div>
-					<div class="insert_elements">
-						<p class="insert_description">컨텐츠</p>
-						<input class="insert_input" type="file" id="source" />
-					</div>
-					<div class="insert_elements">
-						<p class="insert_description">전화번호</p>
-						<input class="insert_input" type="text" id="phone" />
-					</div>
-					<div class="insert_elements">
-						<p class="insert_description">IMEI</p>
-						<input class="insert_input" type="text" id="imei" />
-					</div>
+					<span class="page_name">컨텐츠등록</span><span class="page_name2"> Upload New Contents</span><br />
+					<div class="line"></div><br />
+					<div data-role="listview" id="insert_listArea" data-inset="true"></div>
 					<div>
-						<button class="insert_button" id="apply">등 록</button>
-						<button class="insert_button" id="applycancel">취 소</button>
+						<button class="insert_button" id="apply" style="margin-top:20px;">등 록</button>
+						<button class="insert_button" id="applycancel" style="margin-top:20px;">취 소</button>
 					</div>
 				</div>
 				
 				<div id="update_viewer">
-					<div class="insert_elements">
-						<p class="insert_description">이름</p>
-						<input class="insert_input" type="text" id="updatename" />
-					</div>
-					<div class="insert_elements">
-						<p class="insert_description">문구</p>
-						<input class="insert_input" type="text" id="updatetext" />
-					</div>
-					<div class="insert_elements">
-						<p class="insert_description">컨텐츠</p>
-						<input class="insert_input" type="file" id="updatesource" />
-					</div>
-					<div class="insert_elements">
-						<p class="insert_description">전화번호</p>
-						<input class="insert_input" type="text" id="updatephone" />
-					</div>
-					<div class="insert_elements">
-						<p class="insert_description">IMEI</p>
-						<input class="insert_input" type="text" id="updateimei" />
-					</div>
+					<span class="page_name">컨텐츠수정</span><span class="page_name2"> Modify Contents</span><br />
+					<div class="line"></div><br />
+					<div data-role="listview" id="update_listArea" data-inset="true"></div>
 					<div>
-						<button class="insert_button" id="upload">수 정</button>
-						<button class="insert_button" id="uploadcancel">취 소</button>
+						<button class="insert_button" id="upload" style="margin-top:20px;">수 정</button>
+						<button class="insert_button" id="uploadcancel" style="margin-top:20px;">취 소</button>
 					</div>
 				</div>
 			</article>
@@ -166,9 +165,7 @@
 		var json = new Object();
 		json.start = (index - 1) * 5;
 		json.count = 5;
-		var tagList = "<tr><th width=100>일련번호</th><th width=100>발신자 전화번호</th>";
-		tagList+="<th width=100>수신자 전화번호</th><th width=100>발신자 IMEI</th>";
-		tagList+="<th width=100>발신 시각</th><th>삭제</th></tr>";
+		var tagList = "";
 		$.ajax({
 			type : "post",
 			data : JSON.stringify(json),
@@ -190,7 +187,7 @@
 					$("#listArea").empty();
 					$("#listArea").append(tagList);
 				} else {
-					alert("통화기록 조회 중 오류가 발생하였습니다.");
+					alert("통화기록 조회 중 오류가 발생하였습니다.\n신속한 복구를 위해 노력하겠습니다.서비스 이용에 불편을 드려 죄송합니다.");
 				}
 			},
 			error : function(e) {
@@ -200,9 +197,9 @@
 	}
 	
 	//삭제 버튼을 눌렀을 때 실행되는 함수입니다.
-	//체크 표시가 되어 있는 항목들에 대해 모두 delete_contents() 함수를 실행시킵니다.
+	//체크 표시가 되어 있는 항목들에 대해 모두 delete_records() 함수를 실행시킵니다.
 	function deleteclick_records() {
-		var con_test3 = confirm("선택된 컨텐츠를 모두 삭제하시겠습니까?");
+		var con_test3 = confirm("선택된 통화기록을 모두 삭제하시겠습니까?");
 		if (con_test3 == true) {
 			for (i = 0; i < 3; i++) {
 				if (checkcheck[i].checked == true) {
@@ -210,7 +207,7 @@
 				}
 			}
 		} else if (con_test3 == false) {
-			alert("컨텐츠 삭제를 취소하였습니다.")
+			alert("통화기록 삭제를 취소하였습니다.")
 		}
 	}
 	
@@ -243,8 +240,15 @@
 		location.reload();
 	}
 	function when_not_success() {
-		alert("통화기록 삭제에 실패했습니다.");
+		alert("통화기록 삭제에 실패하였습니다.\n신속한 복구를 위해 노력하겠습니다.서비스 이용에 불편을 드려 죄송합니다.");
 	}
+	
+	var contents_shown=new Array();
+	contents_shown[0]=new Array();
+	contents_shown[1]=new Array();
+	contents_shown[2]=new Array();
+	contents_shown[3]=new Array();
+	contents_shown[4]=new Array();
 	
 	//컨텐츠 목록을 받아오는 함수입니다.
 	function show_contents_list(index) {
@@ -255,10 +259,7 @@
 		jsonlist.count = 5;
 
 		//tagList에 테이블의 구성요소들을 서버로부터 받아온 데이터를 통해 계속 채웁니다.
-		var tagList = "<tr><th width=10%>등록번호</th><th width=10%>이름</th>";
-		tagList+="<th width=15%>전화번호</th><th width=15%>사용자 문구</th>";
-		tagList+="<th width=20%>컨텐츠</th><th width=15%>IMEI</th>";
-		tagList+="<th width=7%>수정</th><th width=7%>삭제</th></tr>";
+		var tagList = "";
 		$.ajax({
 			type : "post",
 			data : JSON.stringify(jsonlist),
@@ -267,16 +268,16 @@
 			success : function(jsonlist) {
 				var result = jsonlist.result;
 				if (result == "1") {
+					var ia=0;
+					ia=Number(ia);
 					$.each(jsonlist.items, function() {
-						//update_items는 Update_contents() 함수의 구성요소들을 붙여갑니다.
-						var update_items = "";
-						update_items += this.id + "\',\'";
-						update_items += this.name + "\',\'";
-						update_items += this.phone + "\',\'";
-						update_items += this.text + "\',\'";
-						update_items += this.source + "\',\'";
-						update_items += this.imei;
-						//tagList += "<tr><td><input type=\"checkbox\" name=\"checkcheck\" value="+this.id+"></input></td>";
+						contents_shown[ia][0]=this.id;
+						contents_shown[ia][1]=this.name;
+						contents_shown[ia][2]=this.phone;
+						contents_shown[ia][3]=this.text;
+						contents_shown[ia][4]=this.source;
+						contents_shown[ia][5]=this.imei;
+						ia++;
 						tagList += "<tr><td width=10%>" + this.id + "</td>";
 						tagList += "<td width=10%>" + this.name + "</td>";
 						tagList += "<td width=15%>" + this.phone + "</td>";
@@ -302,7 +303,7 @@
 					$("#listArea3").empty();
 					$("#listArea3").append(tagList);
 				} else {
-					alert("컨텐츠 기록 조회 중 오류가 발생하였습니다.");
+					alert("컨텐츠 조회 중 오류가 발생하였습니다.\n신속한 복구를 위해 노력하겠습니다.서비스 이용에 불편을 드려 죄송합니다.");
 				}
 			},
 			error : function(e) {
@@ -314,6 +315,7 @@
 	//컨텐츠 삭제 관련 함수들입니다.
 	//삭제 버튼을 눌렀을 때 실행되는 함수입니다.
 	//체크 표시가 되어 있는 항목들에 대해 모두 delete_contents() 함수를 실행시킵니다.
+	var cont_del_check=0;
 	function deleteclick_contents() {
 		var con_test3 = confirm("선택된 컨텐츠를 모두 삭제하시겠습니까?");
 		if (con_test3 == true) {
@@ -321,6 +323,14 @@
 				if (checkcheck[i].checked == true) {
 					delete_contents(checkcheck[i].value);
 				}
+			}
+			if(cont_del_check==0){
+				alert("컨텐츠가 삭제되었습니다.");
+				location.reload();
+			}
+			else{
+				alert("컨텐츠 삭제에 실패하였습니다.\n신속한 복구를 위해 노력하겠습니다.서비스 이용에 불편을 드려 죄송합니다.");
+				cont_del_check=0;
 			}
 		} else if (con_test3 == false) {
 			alert("컨텐츠 삭제를 취소하였습니다.")
@@ -339,10 +349,8 @@
 			success : function(jsondelete) {
 				var result = jsondelete.result;
 				if (result == "1") {
-					alert("컨텐츠가 삭제되었습니다.");
-					location.reload();
 				} else {
-					alert("컨텐츠 삭제에 실패하였습니다.");
+					cont_del_check=1;
 				}
 			},
 			error : function(e) {
@@ -351,8 +359,62 @@
 		});
 	}
 	
+	//등록 화면에 쓰일 함수입니다.
+	function appending_insertarea(){
+		var insert_values="<div class='insert_elements'>";
+		insert_values+="<div class='insert_description'>이    름</div><div class='insert_description2'><input class='insert_input' type='text' id='name' placeholder='이름' /></div></div>";
+		insert_values+="<div class='insert_elements'>";
+		insert_values+="<div class='insert_description'>문    구</div><div class='insert_description2'><input class='insert_input' type='text' id='text' placeholder='표시할 문구' /></div></div>";
+		insert_values+="<div class='insert_elements'>";
+		insert_values+="<div class='insert_description'>컨 텐 츠</div><div class='insert_description2'><input class='insert_input' type='file' id='source' /></div></div>";
+		insert_values+="<div class='insert_elements'>";
+		insert_values+="<div class='insert_description'>전화번호</div><div class='insert_description2'><input class='insert_input' type='text' id='phone' placeholder='전화번호' /></div></div>";
+		insert_values+="<div class='insert_elements'>";
+		insert_values+="<div class='insert_description'>I M E I</div><div class='insert_description2'><input class='insert_input' type='text' id='imei' placeholder='휴대폰 IMEI' /></div></div>";
+		$("#insert_listArea").empty();
+		$("#insert_listArea").append(insert_values);
+	}
+		/* <div class="insert_elements">
+						<div class="insert_description">이    름</div><div class="insert_description2"><input class="insert_input" type="text" id="name" placeholder="이름" /></div>
+					</div>
+					<div class="insert_elements">
+						<div class="insert_description">문    구</div><div class="insert_description2"><input class="insert_input" type="text" id="text" placeholder="표시할 문구" /></div>
+					</div>
+					<div class="insert_elements">
+						<div class="insert_description">컨 텐 츠</div><div class="insert_description2"><input class="insert_input" type="file" id="source" /></div>
+					</div>
+					<div class="insert_elements">
+						<div class="insert_description">전화번호</div><div class="insert_description2"><input class="insert_input" type="text" id="phone" placeholder="전화번호" /></div>
+					</div>
+					<div class="insert_elements">
+						<div class="insert_description">I M E I</div><div class="insert_description2"><input class="insert_input" type="text" id="imei" placeholder="휴대폰 IMEI" /></div>
+					</div>
+					 */
+	
 	//수정 시에 쓰일 함수입니다.
 	function update_contents(index){
+		for(i=0;i<5;i++){
+			if(index==contents_shown[i][0]){
+				var update_values="";
+				update_values+="<div class='insert_elements'>";
+				update_values+="<div class='insert_description'>이    름</div>";
+				update_values+="<div class='insert_description2'><input class='insert_input' type='text' id='updatename' value="+contents_shown[i][1]+" /></div></div>";
+				update_values+="<div class='insert_elements'>";
+				update_values+="<div class='insert_description'>문    구</div>";
+				update_values+="<div class='insert_description2'><input class='insert_input' type='text' id='updatetext' value="+contents_shown[i][3]+" /></div></div>";
+				update_values+="<div class='insert_elements'>";
+				update_values+="<div class='insert_description'>컨 텐 츠</div>";
+				update_values+="<div class='insert_description2'><input class='insert_input' type='file' id='updatesource' /></div></div>";
+				update_values+="<div class='insert_elements'>";
+				update_values+="<div class='insert_description'>전화번호</div>";
+				update_values+="<div class='insert_description2'><input class='insert_input' type='text' id='updatephone' value="+contents_shown[i][2]+" /></div></div>";
+				update_values+="<div class='insert_elements'>";
+				update_values+="<div class='insert_description'>I M E I</div>";
+				update_values+="<div class='insert_description2'><input class='insert_input' type='text' id='updateimei' value="+contents_shown[i][5]+" /></div></div>";
+				$("#update_listArea").empty();
+				$("#update_listArea").append(update_values);
+			}
+		}
 		contentsId=index;
 		$("#update_viewer").show();
 		$("#contents_viewer").hide();
@@ -395,7 +457,7 @@
 		}
 
 		if (contentsName === '' || contentsText === '' || contentsSource === '' || contentsPhone === '' || contentsImei === '') {
-			alert("빈 칸을 모두 채우세요.");
+			alert("빈 칸을 입력해주세요.");
 			return;
 		}
 
@@ -484,9 +546,11 @@
 				var result = json.result;
 				if (result == "1") {
 					alert("등록되었습니다.");
-					location.reload();
+					$("#contents_viewer").show();
+					show_contents_list(1);
+					$("#insert_viewer").hide();
 				} else {
-					alert("등록 중 오류가 발생하였습니다.");
+					alert("등록 중 오류가 발생하였습니다.\n신속한 복구를 위해 노력하겠습니다.서비스 이용에 불편을 드려 죄송합니다.");
 				}
 				$("#contents").load("contentsviewer.html");
 			},
@@ -515,9 +579,11 @@
 				var result = json.result;
 				if (result == "1") {
 					alert("수정되었습니다.");
-					location.reload();
+					$("#contents_viewer").show();
+					show_contents_list(1);
+					$("#update_viewer").hide();
 				} else {
-					alert("수정 중 오류가 발생하였습니다.");
+					alert("수정 중 오류가 발생하였습니다.\n신속한 복구를 위해 노력하겠습니다.서비스 이용에 불편을 드려 죄송합니다.");
 				}
 				$("#contents").load("contentsviewer.html");
 			},
@@ -543,7 +609,7 @@
 						alert(count);
 					});
 				} else {
-					alert("연결 중 오류가 발생하였습니다.");
+					alert("연결 중 오류가 발생하였습니다.\n신속한 복구를 위해 노력하겠습니다.서비스 이용에 불편을 드려 죄송합니다.");
 				}
 			},
 			error : function(e) {
@@ -569,7 +635,7 @@
 		//화면의 폭에 따라 메뉴화면의 구성을 변경하는 menuwidth()함수도 포함됩니다.
 		var m=document.querySelector("article");
 		var h=document.querySelector("header");
-		var hHeight;
+		var hHeight1;
 		
 		function menuwidth(){
 			var windowWidth=document.body.offsetWidth;
@@ -584,18 +650,18 @@
 		}
 
 		function setTopPadding(){
-			hHeight=h.offsetHeight;
-			m.style.paddingTop=hHeight+"px";
+			hHeight1=h.offsetHeight;
+			m.style.paddingTop=hHeight1+"px";
 		}
 
 		window.onload = function() {
 			menuwidth();
 			setTopPadding();
 		};
-		 
+		
 		window.onresize = function() {
 			menuwidth();
-			setTopPadding();
+			setTopPadding2();
 		}
 		
 		//화면 폭이 작을 경우 메뉴버튼의 형태와 역할을 명시합니다.
@@ -712,6 +778,7 @@
 		
 		//등록 버튼을 누르면 등록화면이 보여집니다.
 		$("#InsertButton").click(function(){
+			appending_insertarea();
 			$("#insert_viewer").show();
 			$("#contents_viewer").hide();
 		});
@@ -721,6 +788,7 @@
 		});
 		
 		
+		
 		//여기서부터는 Insert 화면 부분입니다.
 		$("#apply").on('click', function() {
 			insert_update=0;
@@ -728,7 +796,7 @@
 		});
 
 		$("#applycancel").on('click', function() {
-			alert("등록을 취소하였습니다.");
+			alert("등록을 취소하였습니다. 이전 화면으로 돌아갑니다.");
 			$("#contents_viewer").show();
 			$("#insert_viewer").hide();
 		});
@@ -740,7 +808,7 @@
 		});
 
 		$("#uploadcancel").on('click', function() {
-			alert("수정을 취소하였습니다.");
+			alert("수정을 취소하였습니다. 이전 화면으로 돌아갑니다.");
 			$("#contents_viewer").show();
 			$("#update_viewer").hide();
 		});

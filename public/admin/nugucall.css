@@ -16,7 +16,7 @@ header{
 }
 .first_header{
 	cursor:pointer;
-	width:100%;
+	width:800px;
 	max-width:800px;
 }
 .second_header{}
@@ -34,7 +34,7 @@ header{
 	border-color: transparent;
 	cursor: pointer;
 	transition: color 0.7s, width 0.7s;
-	padding:1%;
+	padding:1px;
 }
 .menu_button:hover{
 	color: #8093FF;
@@ -94,11 +94,11 @@ article{
 .page_name2{
 	font-weight:700;
 	text-align:left;
-	font-size:20px;
+	font-size:17px;
 	color:#8093FF;
 }
 .line{
-	border-bottom:1px double #1428A0;
+	border-bottom:2px double #5168ea;
 }
 .buttonbutton {
 	background-color: #1428A0;
@@ -119,7 +119,7 @@ article{
 	margin-top: 30px;
 	border-collapse: collapse;
 	border-top: 1px solid #eeeeee;
-	font-size:1.5vw;
+	font-size:1.3vw;
 	width:100%;
 	table-layout:fixed;
 }
@@ -129,6 +129,8 @@ article{
 }
 .tbstyle th {
 	border-bottom: 1px solid #eeeeee;
+	white-space:nowrap;
+	height:20px;
 }
 .tbstyle td {
 	border-bottom: 1px solid #eeeeee;
@@ -145,21 +147,50 @@ a.toptop {
 	bottom: 1%;
 	display: none;
 }
+#beforetable{
+	padding-top:260px;
+	font-size:13px;
+	position:fixed;
+	background-color:white;
+	top:5px;
+	white-space:nowrap;
+	z-index:9998;
+}
+#flex-area{
+	padding-top:140px;
+}
+#flex-area2{
+	padding-top:175px;
+}
 .insert_elements {
+	float:center;
 	display: block;
 	margin-bottom: 20px;
+	width:70%;
 }
 .insert_description {
+	text-align:left;
+	float:left;
+	margin-left:20%;
+	margin-top: 20px;
+	width:15%;
+	font-size:15px;
+	height:25px;
+}
+.insert_description2 {
+	float:right;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	color: #666666;
+	width:65%;
+	height:25px;
 }
 .insert_input {
-	width: 50%;
-	height: 25px;
+	width: 100%;
+	height: 15px;
 	padding: 10px;
 	border: 2px solid #cccccc;
-	text-align: center;
+	right:0;
 }
 .insert_button {
 	width: 120px;
@@ -224,6 +255,7 @@ input[type=radio]{
 	display: inline-block;
 }
 #ck-button label {
+	font-size:1.2vw;
 	cursor:pointer;
     float:left;
     width:4.0em;
