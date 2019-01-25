@@ -12,21 +12,21 @@
 
 </head>
 
-<body>
+<body onhashchange="detect_location();">
 	<div id="wrapper">
 		<header>
-			<img class="first_header" src="images/누구콜_1.png" onclick="topclick();">
+			<a href="#" onclick="mainpage_move();"><div class="first_header_outer"><img class="first_header" src="images/누구콜_1.png"></div></a>
 			<div id="second_header">
-				<input id="main_button" class="menu_button" type="button" value="메인화면"></input>
-				<input id="records_list_button" class="menu_button" type="button" value="통화기록조회"></input>
-				<input id="contents_list_button" class="menu_button" type="button" value="컨텐츠조회"></input>
+				<a href="#" onclick="mainpage_move();"><input id="main_button" class="menu_button" type="button" value="메인화면"></input></a>
+				<a href="#records_viewer" onclick="records_move();"><input id="records_list_button" class="menu_button" type="button" value="통화기록조회"></input></a>
+				<a href="#contents_viewer" onclick="contents_move();"><input id="contents_list_button" class="menu_button" type="button" value="컨텐츠조회"></input></a>
 			</div>
 			<div id="second_header2">
 				<button id="menu_list_button" class="menu_button2">메뉴</button>
 				<div id="show_menu_list">
-					<input id="main_button2" class="menu_button3" type="button" value="메인화면"></input>
-					<input id="records_list_button2" class="menu_button3" type="button" value="통화기록조회"></input>
-					<input id="contents_list_button2" class="menu_button3" type="button" value="컨텐츠조회"></input>
+					<a class="menu_clicker" href="#" onclick="mainpage_move();"><input id="main_button2" class="menu_button3" type="button" value="메인화면"></input></a>
+					<a class="menu_clicker" href="#records_viewer" onclick="records_move();"><input id="records_list_button2" class="menu_button3" type="button" value="통화기록조회"></input></a>
+					<a class="menu_clicker" href="#contents_viewer" onclick="contents_move();"><input id="contents_list_button2" class="menu_button3" type="button" value="컨텐츠조회"></input></a>
 				</div>
 			</div>
 		</header>
@@ -78,7 +78,7 @@
 						<div style="text-align: left;">
 							<input class="buttonbutton" type="button" id="InsertButton" value="등록"></input>
 							<input class="buttonbutton" type="button" id="DeleteButton_contents" value="삭제"></input>
-							<br /><br />이미지 클릭 시 사진을 원본 사이즈로 볼 수 있으며, 다시 클릭하면 원래대로 돌아옵니다.
+							<br /><br />이미지 클릭 시 사진을 확대하여 볼 수 있으며, 다시 클릭하면 원래대로 돌아옵니다.
 						</div>
 						<table class="tbstyle">
 							<tr>
@@ -119,6 +119,9 @@
 						<button class="insert_button" id="uploadcancel" style="margin-top:20px;">취 소</button>
 					</div>
 				</div>
+				<div id="img_viewer">
+					<div data-role="listview" id="img_listArea" data-inset="true"></div>
+				</div>
 			</article>
 		</section>
 	</div>
@@ -150,15 +153,6 @@
 	$(window).load(function() {    
 		$('#loading').hide();  
 	});
-
-	//상단 배너 이미지를 클릭하면 메인화면으로 돌아갑니다.
-	function topclick() {
-		$("#mainpage_viewer").show();
-		$("#records_viewer").hide();
-		$("#contents_viewer").hide();
-		$("#insert_viewer").hide();
-		$("#update_viewer").hide();
-	}
 	
 	//통화기록을 받아오는 함수입니다.
 	function show_records_list(index) {
@@ -199,7 +193,7 @@
 	//삭제 버튼을 눌렀을 때 실행되는 함수입니다.
 	//체크 표시가 되어 있는 항목들에 대해 모두 delete_records() 함수를 실행시킵니다.
 	function deleteclick_records() {
-		var con_test3 = confirm("선택된 통화기록을 삭제하면 삭제된 기록들은 복구할 수 없습니다.\n모두 삭제하시겠습니까?");
+		var con_test3 = confirm("삭제된 기록들은 복구할 수 없습니다.\n모두 삭제하시겠습니까?");
 		if (con_test3 == true) {
 			for (i = 0; i < 3; i++) {
 				if (checkcheck[i].checked == true) {
@@ -292,7 +286,7 @@
 							tagList += "<td width=20%><video controls class='max-small'";
 							tagList+=" src='http://115.145.171.157:8085/contents/" + this.source + "'></video></td>";
 						} else {
-							tagList += "<td width=20%><img class='max-small' src='http://115.145.171.157:8085/contents/" + this.source + "'></td>";
+							tagList += "<td width=20%><img onclick=\"imgpopup('"+sourcename+"');\" class='max-small' src='http://115.145.171.157:8085/contents/" + this.source + "'></td>";
 						}
 						tagList += "<td width=15%>" + this.imei + "</td>";
 						tagList += "<td width=7%><input class='buttonbutton2' number='" + this.id + "' type='button' value='수정' id='Update' onclick=\"update_contents('" + this.id + "');\"></input></td>";
@@ -312,12 +306,30 @@
 		});
 	}
 	
+	var imgsource = "";
+	
+	function imgpopup(img){
+		imgsource += "<img class='big_image' src=\"http://115.145.171.157:8085/contents/" + img + "\" onclick=\"ImgPopupreturn()\">";
+		$("#contents_viewer").hide();
+		$("#img_viewer").show();
+		$("#img_listArea").empty();
+		$("#img_listArea").append(imgsource);
+	}
+
+	function ImgPopupreturn() {
+		imgsource="";
+		$("#img_listArea").empty();
+		$("#img_listArea").append(imgsource);
+		$("#contents_viewer").show();
+		$("#img_viewer").hide();
+	}
+	
 	//컨텐츠 삭제 관련 함수들입니다.
 	//삭제 버튼을 눌렀을 때 실행되는 함수입니다.
 	//체크 표시가 되어 있는 항목들에 대해 모두 delete_contents() 함수를 실행시킵니다.
 	var cont_del_check=0;
 	function deleteclick_contents() {
-		var con_test3 = confirm("선택된 컨텐츠를 삭제하면 삭제된 항목들은 복구할 수 없습니다.\n모두 삭제하시겠습니까?");
+		var con_test3 = confirm("삭제된 항목들은 복구할 수 없습니다.\n모두 삭제하시겠습니까?");
 		if (con_test3 == true) {
 			for (i = 0; i < 3; i++) {
 				if (checkcheck[i].checked == true) {
@@ -546,13 +558,10 @@
 				var result = json.result;
 				if (result == "1") {
 					alert("등록되었습니다.");
-					$("#contents_viewer").show();
-					show_contents_list(1);
-					$("#insert_viewer").hide();
+					location.reload();
 				} else {
 					alert("등록 중 오류가 발생하였습니다.\n서비스 이용에 불편을 드려 죄송합니다.");
 				}
-				$("#contents").load("contentsviewer.html");
 			},
 			error : function(e) {
 				console.log(e);
@@ -579,13 +588,10 @@
 				var result = json.result;
 				if (result == "1") {
 					alert("수정되었습니다.");
-					$("#contents_viewer").show();
-					show_contents_list(1);
-					$("#update_viewer").hide();
+					location.reload();
 				} else {
 					alert("수정 중 오류가 발생하였습니다.\n서비스 이용에 불편을 드려 죄송합니다.");
 				}
-				$("#contents").load("contentsviewer.html");
 			},
 			error : function(e) {
 				console.log(e);
@@ -618,15 +624,64 @@
 		});
 	}
 	
+	function detect_location(){
+		var loc_href=$(location).attr('href');
+		if(loc_href=="http://115.145.171.157:8085/admin/nugucall.html#"||loc_href=="http://115.145.171.157:8085/admin/nugucall.html"){
+			$("#mainpage_viewer").show();
+			$("#records_viewer").hide();
+			$("#contents_viewer").hide();
+			$("#insert_viewer").hide();
+			$("#update_viewer").hide();
+			$("#img_viewer").hide();
+		}
+		if(loc_href=="http://115.145.171.157:8085/admin/nugucall.html#records_viewer"){
+			$("#mainpage_viewer").hide();
+			$("#records_viewer").show();
+			$("#contents_viewer").hide();
+			$("#insert_viewer").hide();
+			$("#update_viewer").hide();
+			$("#img_viewer").hide();
+		}
+		if(loc_href=="http://115.145.171.157:8085/admin/nugucall.html#contents_viewer"){
+			$("#mainpage_viewer").hide();
+			$("#records_viewer").hide();
+			$("#contents_viewer").show();
+			$("#insert_viewer").hide();
+			$("#update_viewer").hide();
+			$("#img_viewer").hide();
+		}
+	}
 	
-	
-	$(document).ready(function(){
-		
-		//초기화면은 메인화면으로 설정합니다.
+	function mainpage_move(){
+		$("#mainpage_viewer").show();
 		$("#records_viewer").hide();
 		$("#contents_viewer").hide();
 		$("#insert_viewer").hide();
 		$("#update_viewer").hide();
+		$("#img_viewer").hide();
+	}
+	
+	function records_move(){
+		$("#mainpage_viewer").hide();
+		$("#records_viewer").show();
+		$("#contents_viewer").hide();
+		$("#insert_viewer").hide();
+		$("#update_viewer").hide();
+		$("#img_viewer").hide();
+	}
+	
+	function contents_move(){
+		$("#mainpage_viewer").hide();
+		$("#records_viewer").hide();
+		$("#contents_viewer").show();
+		$("#insert_viewer").hide();
+		$("#update_viewer").hide();
+		$("#img_viewer").hide();
+	}
+	
+	$(document).ready(function(){
+		
+		detect_location();
 		
 		//화면 폭이 작을 경우 나타나는 메뉴 리스트 영역도 숨깁니다.
 		$("#show_menu_list").hide();
@@ -667,56 +722,23 @@
 		//화면 폭이 작을 경우 메뉴버튼의 형태와 역할을 명시합니다.
 		$("#second_header2").hover(function(){
 			$('#show_menu_list').show();
-			$("#main_button2").click(function() {
-				$("#mainpage_viewer").show();
-				$("#records_viewer").hide();
-				$("#contents_viewer").hide();
-				$("#insert_viewer").hide();
-				$("#update_viewer").hide();
-			});
-			$("#records_list_button2").click(function() {
-				$("#records_viewer").show();
-				$("#mainpage_viewer").hide();
-				$("#contents_viewer").hide();
-				$("#insert_viewer").hide();
-				$("#update_viewer").hide();
-			});
-			$("#contents_list_button2").click(function() {
-				$("#contents_viewer").show();
-				$("#mainpage_viewer").hide();
-				$("#records_viewer").hide();
-				$("#insert_viewer").hide();
-				$("#update_viewer").hide();
-			});
 			$("#show_menu_list").hover(function(){
 				$('#show_menu_list').show();
 			})
 		},function(){
 			$('#show_menu_list').hide();
 		});
-	
+		/*
 		//화면 폭이 클 경우 메뉴버튼의 형태와 역할을 명시합니다.
 		$("#main_button").click(function() {
-			$("#mainpage_viewer").show();
-			$("#records_viewer").hide();
-			$("#contents_viewer").hide();
-			$("#insert_viewer").hide();
-			$("#update_viewer").hide();
+			detect_location();
 		});
 		$("#records_list_button").click(function() {
-			$("#records_viewer").show();
-			$("#mainpage_viewer").hide();
-			$("#contents_viewer").hide();
-			$("#insert_viewer").hide();
-			$("#update_viewer").hide();
+			detect_location();
 		});
 		$("#contents_list_button").click(function() {
-			$("#contents_viewer").show();
-			$("#mainpage_viewer").hide();
-			$("#records_viewer").hide();
-			$("#insert_viewer").hide();
-			$("#update_viewer").hide();
-		});
+			detect_location();
+		}); */
 		
 		
 		//여기서부터는 Records 화면 부분입니다.
@@ -787,6 +809,10 @@
 			deleteclick_contents();
 		});
 		
+		//이미지를 클릭하면 확대되어 볼 수 있습니다.
+		$('#clickimg').click(function(){
+			
+		});
 		
 		
 		//여기서부터는 Insert 화면 부분입니다.
@@ -796,9 +822,11 @@
 		});
 
 		$("#applycancel").on('click', function() {
-			alert("등록을 취소하였습니다. 이전 화면으로 돌아갑니다.");
-			$("#contents_viewer").show();
-			$("#insert_viewer").hide();
+			var con_test_apply=confirm("등록을 취소하시겠습니까?\n등록을 취소하면 작성된 내용들은 저장되지 않습니다.");
+			if(con_test_apply==true){
+				alert("등록을 취소하였습니다. 컨텐츠 목록 화면으로 돌아갑니다.");
+				location.reload();
+			}
 		});
 		
 		//여기서부터는 Update 화면 부분입니다.
@@ -808,10 +836,16 @@
 		});
 
 		$("#uploadcancel").on('click', function() {
-			alert("수정을 취소하였습니다. 이전 화면으로 돌아갑니다.");
-			$("#contents_viewer").show();
-			$("#update_viewer").hide();
+			var con_test_upload=confirm("수정을 취소하시겠습니까?\n수정을 취소하면 작성된 내용들은 저장되지 않습니다.");
+			if(con_test_upload==true){
+				alert("수정을 취소하였습니다. 컨텐츠 목록 화면으로 돌아갑니다.");
+				location.reload();
+			}
 		});
+		
+
+		
+		
 	});
 </script>
 </html>

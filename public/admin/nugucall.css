@@ -1,6 +1,5 @@
 body {
 	font-family: 'Noto Sans KR', sans-serif;
-	font-size: 1.5vw;
 }
 #wrapper{
 	width:100%;
@@ -12,14 +11,25 @@ header{
 	top:0;
 	left:0;
 	width:100%;
-	background: #1428A0;
+	background:#1428A0;
+}
+.first_header_outer{
+	width:100%;
+	height:192px;
+	background:linear-gradient(to bottom, rgba(127,146,255,1) 0%,rgba(20,40,160,1) 100%);
 }
 .first_header{
 	cursor:pointer;
 	width:800px;
 	max-width:800px;
+	height:192px;
 }
-.second_header{}
+.second_header{
+	height:50px;
+}
+.second_header2{
+	height:50px;
+}
 .menu_button{
 	width:110px;
 	height:50px;
@@ -119,7 +129,7 @@ article{
 	margin-top: 30px;
 	border-collapse: collapse;
 	border-top: 1px solid #eeeeee;
-	font-size:1.3vw;
+	font-size:15px;
 	width:100%;
 	table-layout:fixed;
 }
@@ -131,6 +141,7 @@ article{
 	border-bottom: 1px solid #eeeeee;
 	white-space:nowrap;
 	height:20px;
+	font-size:15px;
 }
 .tbstyle td {
 	border-bottom: 1px solid #eeeeee;
@@ -148,7 +159,7 @@ a.toptop {
 	display: none;
 }
 #beforetable{
-	padding-top:260px;
+	padding-top:250px;
 	font-size:13px;
 	position:fixed;
 	background-color:white;
@@ -157,7 +168,7 @@ a.toptop {
 	z-index:9998;
 }
 #flex-area{
-	padding-top:140px;
+	padding-top:130px;
 }
 #flex-area2{
 	padding-top:175px;
@@ -172,14 +183,14 @@ a.toptop {
 	text-align:left;
 	float:left;
 	margin-left:20%;
-	margin-top: 20px;
+	margin-top: 25px;
 	width:15%;
 	font-size:15px;
 	height:25px;
 }
 .insert_description2 {
 	float:right;
-	margin-top: 10px;
+	margin-top: 15px;
 	margin-bottom: 10px;
 	color: #666666;
 	width:65%;
@@ -288,4 +299,7 @@ input[type=radio]{
 }
 .buttonbutton2:hover {
 	background-color: #8093FF;
+}
+.big_image{
+	max-width:100%;
 }
