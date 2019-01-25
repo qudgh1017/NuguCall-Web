@@ -284,6 +284,7 @@ input[type=radio]{
 	text-decoration: none;
 	display: inline-block;
 	cursor: pointer;
+	font-size:1.2vw;
 }
 .buttonbutton2:hover {
 	background-color: #8093FF;
