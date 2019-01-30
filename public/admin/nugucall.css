@@ -96,7 +96,7 @@ article{
 .buttonform1:hover {
 	background-color: #8093FF;
 }
-.tbstyle {
+.tbstyle1,.tbstyle2 {
 	margin-top: 30px;
 	border-collapse: collapse;
 	border-top: 1px solid #eeeeee;
@@ -104,32 +104,32 @@ article{
 	width:100%;
 	table-layout:fixed;
 }
-.tbstyle th, .tbstyle td {
+.tbstyle1 th, .tbstyle1 td, .tbstyle2 th, .tbstyle2 td {
 	padding: 10px;
 }
-.tbstyle th {
+.tbstyle1 th, .tbstyle2 th {
 	border-bottom: 1px solid #eeeeee;
 	white-space:nowrap;
 	height:20px;
 	font-size:15px;
 }
-.tbstyle td {
+.tbstyle1 td {
+	border-bottom: 1px solid #eeeeee;
+}
+.tbstyle2 td {
 	border-bottom: 1px solid #eeeeee;
 	height:200px;
 }
-.tbstyle th:first-child, .tbstyle td:first-child {
+.tbstyle1 th:first-child, .tbstyle1 td:first-child, .tbstyle2 th:first-child, .tbstyle2 td:first-child {
 	border-left: 0;
 }
-.tbstyle th:last-child, .tbstyle td:last-child {
+.tbstyle1 th:last-child, .tbstyle1 td:last-child, .tbstyle2 th:last-child, .tbstyle2 td:last-child {
 	border-right: 0;
 }
 .records_imei{
 	width:27%;
 }
-.records_sender{
-	width:23%;
-}
-.records_receiver{
+.records_sender, .records_receiver{
 	width:23%;
 }
 .records_time{
@@ -141,22 +141,13 @@ article{
 .contents_imei{
 	width:20%;
 }
-.contents_name{
-	width:10%;
-}
-.contents_phone{
-	width:10%;
-}
-.contents_text{
+.contents_name, .contents_phone, .contents_text{
 	width:10%;
 }
 .contents_contents{
 	width:36%;
 }
-.contents_modify{
-	width:7%;
-}
-.contents_delete{
+.contents_modify, .contents_delete{
 	width:7%;
 }
 .max-small {
