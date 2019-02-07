@@ -203,7 +203,7 @@
 		//현재 위치의 주소를 얻습니다.
 		var loc_href=$(location).attr('href');
 		//현재 주소에 따라 특정 화면만 show하고 나머지는 숨깁니다.
-		if(loc_href=="file:///C:/Users/monet/eclipse-workspace/test/WebContent/nugucall.html#"||loc_href=="file:///C:/Users/monet/eclipse-workspace/test/WebContent/nugucall.html"){
+		if(loc_href=="http://115.145.171.157:8085/admin/nugucall.html#"||loc_href=="http://115.145.171.157:8085/admin/nugucall.html"){
 			$("#mainpage_viewer").show();
 			$("#records_viewer").hide();
 			$("#contents_viewer").hide();
@@ -211,7 +211,7 @@
 			$("#update_viewer").hide();
 			$("#img_viewer").hide();
 		}
-		if(loc_href=="file:///C:/Users/monet/eclipse-workspace/test/WebContent/nugucall.html#records_viewer"){
+		if(loc_href=="http://115.145.171.157:8085/admin/nugucall.html#records_viewer"){
 			$("#mainpage_viewer").hide();
 			$("#records_viewer").show();
 			$("#contents_viewer").hide();
@@ -219,7 +219,7 @@
 			$("#update_viewer").hide();
 			$("#img_viewer").hide();
 		}
-		if(loc_href=="file:///C:/Users/monet/eclipse-workspace/test/WebContent/nugucall.html#contents_viewer"){
+		if(loc_href=="http://115.145.171.157:8085/admin/nugucall.html#contents_viewer"){
 			$("#mainpage_viewer").hide();
 			$("#records_viewer").hide();
 			$("#contents_viewer").show();
