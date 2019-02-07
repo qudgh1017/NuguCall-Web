@@ -629,7 +629,7 @@
 		$("#contents_viewer").hide();
 	}
 	
-	function gettingcount(){
+	function gettingcount(count){
 		var json = new Object();
 		$.ajax({
 			type : "post",
@@ -640,9 +640,7 @@
 				var result = json.result;
 				if (result == "1") {
 					$.each(json.items,function(){
-						var count="";
-						count+="숫자 받는 기능이 안됩니다...ㅠ...";
-						alert(count);
+						count+=this.thisCount;
 					});
 				} else {
 					alert("연결 중 오류가 발생하였습니다.\n서비스 이용에 불편을 드려 죄송합니다.");
@@ -751,7 +749,9 @@
 		
 		//하단에 목록 번호를 붙이는 과정. 목록 개수는 임의로 10개라고 정했지만 나중에 전체 목록 개수를 받을 수 있게 되면 달라질 예정입니다.
 		//각 목록 번호를 클릭하면 각 번호에 따라 show_contents_list(i) 함수를 실행하게 됩니다.
-		for (i = 1; i < 10; i++) {
+		var count=0;
+		gettingcount(count);
+		for (i = 1; i < count/5+1; i++) {
 			var test4 = "";
 			test4 += i;
 			if(i==1){
