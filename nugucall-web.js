@@ -251,7 +251,7 @@ function selectUserContents(data, response) {
 
 function selectUserContentsCount(response) {
 	try {
-		var sql = "select count(*) from contents";
+		var sql = "select count(*) thisCount from contents";
 		var query = mysql.format(sql);
 
 		connection.query(query, function(error, results, fields) {
