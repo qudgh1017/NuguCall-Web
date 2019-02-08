@@ -9,6 +9,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script src="http://malsup.github.com/jquery.cycle2.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
 
 </head>
 
@@ -244,11 +245,12 @@
 				var result = json.result;
 				if (result == "1") {
 					$.each(json.items, function() {
+						var str = moment("/Date("+this.time+")/").format("YYYY년 MM월 DD일 HH:mm:ss");
 						tagList += "<tr>";
 						tagList += "<td class='records_imei'>" + this.imei + "</td>";
 						tagList += "<td class='records_sender'>" + this.sender + "</td>";
 						tagList += "<td class='records_receiver'>" + this.receiver + "</td>";
-						tagList += "<td class='records_time'>" + this.time + "</td>";
+						tagList += "<td class='records_time'>" + str + "</td>";
 						tagList+="<td class='records_delete'><input type='checkbox' id='checkcheck' value="+this.id+"></input></td>";
 						tagList += "</tr>";
 					});
