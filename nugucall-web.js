@@ -125,6 +125,13 @@ app.post("/select_user_records", function(request, response) {
 	});
 });
 
+//사용자 발신기록 개수 조회
+app.post("/select_user_records_count", function(request, response) {
+	request.on('data', function(data) {
+		selectUserRecordsCount(response);
+	});
+});
+
 // 상대 발신기록 조회
 app.post("/select_your_records", function(request, response) {
 	request.on('data', function(data) {
@@ -393,6 +400,27 @@ function selectUserRecords(data, response) {
 		var sql = "select * from records order by id desc limit ?, ?";
 		var inserts = [ data.start, data.count ];
 		var query = mysql.format(sql, inserts);
+
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+function selectUserRecordsCount(response) {
+	try {
+		var sql = "select count(*) thisCount from records";
+		var query = mysql.format(sql);
 
 		connection.query(query, function(error, results, fields) {
 			var json = new Object();
