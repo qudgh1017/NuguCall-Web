@@ -83,6 +83,20 @@ app.post("/select_user_contents_count", function(request, response) {
 	});
 });
 
+//사용자 컨텐츠 검색
+app.post("/search_user_contents", function(request, response) {
+	request.on('data', function(data) {
+		searchUserContents(data.toString(), response);
+	});
+});
+
+//사용자 컨텐츠 검색 개수전송
+app.post("/search_user_contents_count", function(request, response) {
+	request.on('data', function(data) {
+		searchUserContentsCount(data.toString(), response);
+	});
+});
+
 // 상대 컨텐츠 조회
 app.post("/select_your_contents", function(request, response) {
 	request.on('data', function(data) {
@@ -129,6 +143,20 @@ app.post("/select_user_records", function(request, response) {
 app.post("/select_user_records_count", function(request, response) {
 	request.on('data', function(data) {
 		selectUserRecordsCount(response);
+	});
+});
+
+//사용자 발신기록 검색
+app.post("/search_user_records", function(request, response) {
+	request.on('data', function(data) {
+		searchUserRecords(data.toString(), response);
+	});
+});
+
+//사용자 발신기록 검색 개수전송
+app.post("/search_user_records_count", function(request, response) {
+	request.on('data', function(data) {
+		searchUserRecordsCount(data.toString(), response);
 	});
 });
 
@@ -260,6 +288,54 @@ function selectUserContentsCount(response) {
 	try {
 		var sql = "select count(*) thisCount from contents";
 		var query = mysql.format(sql);
+
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+function searchUserContents(data, response) {
+	try {
+		data = JSON.parse(data);
+
+		var sql = "select * from contents where name = ? or phone = ? or text = ? or imei = ? order by id desc limit ?, ?";
+		var inserts = [ data.search, data.search, data.search, data.search, data.start, data.count ];
+		var query = mysql.format(sql, inserts);
+
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+function searchUserContentsCount(data, response) {
+	try {
+		data = JSON.parse(data);
+
+		var sql = "select count(*) thisCount from contents where name = ? or phone = ? or text = ? or imei = ?";
+		var inserts = [ data.search, data.search, data.search, data.search ];
+		var query = mysql.format(sql, inserts);
 
 		connection.query(query, function(error, results, fields) {
 			var json = new Object();
@@ -421,6 +497,54 @@ function selectUserRecordsCount(response) {
 	try {
 		var sql = "select count(*) thisCount from records";
 		var query = mysql.format(sql);
+
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+function searchUserRecords(data, response) {
+	try {
+		data = JSON.parse(data);
+
+		var sql = "select * from records where sender = ? or receiver = ? or imei = ? order by id desc limit ?, ?";
+		var inserts = [ data.search, data.search, data.search, data.start, data.count ];
+		var query = mysql.format(sql, inserts);
+
+		connection.query(query, function(error, results, fields) {
+			var json = new Object();
+			if (error) {
+				json.result = 0;
+				console.log("[DB Error] " + error);
+			} else {
+				json.result = 1;
+				json.items = results;
+			}
+			response.status(200).send(json);
+		});
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+function searchUserRecordsCount(data, response) {
+	try {
+		data = JSON.parse(data);
+
+		var sql = "select count(*) from records where sender = ? or receiver = ? or imei = ?";
+		var inserts = [ data.search, data.search, data.search ];
+		var query = mysql.format(sql, inserts);
 
 		connection.query(query, function(error, results, fields) {
 			var json = new Object();
